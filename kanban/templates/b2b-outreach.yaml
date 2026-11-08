@@ -1,0 +1,84 @@
+name: B2B Cold Outreach
+description: Full B2B cold outreach pipeline from lead scraping to sent emails. Brand-agnostic — works for any vertical.
+
+variables:
+  - name: vertical
+    required: true
+    description: Target industry/vertical (e.g. "resorts", "saas", "agencies")
+  - name: tenant
+    required: true
+    description: Brand/project tenant name
+  - name: region
+    default: US
+    description: Geographic region for leads
+  - name: pain_point
+    required: false
+    description: Specific pain point to target in outreach
+  - name: funnel_id
+    required: false
+    description: Funnel ID (e.g. A for Enchantents cold email). If set, outreach aligns to this funnel's conversion path.
+
+tasks:
+  - id: scrape
+    title: "Scrape {{vertical}} leads in {{region}}"
+    assignee: scraper
+    skills: [b2b-cold-outreach]
+    priority: 3
+    body: |
+      Scrape qualified {{vertical}} leads in {{region}}.
+      Use Google Maps, industry directories, and LinkedIn.
+      Output a structured CSV with: company, contact, email, size, notes.
+      Target 50-100 leads.
+
+  - id: research
+    title: "Deep-research {{vertical}} leads"
+    assignee: researcher
+    skills: [competitive-intel]
+    parents: [scrape]
+    priority: 2
+    body: |
+      For each lead from the scrape, research: recent news, tech stack,
+      pain points, decision maker names.{{#pain_point}}
+      Focus specifically on "{{pain_point}}" as the outreach hook.{{/pain_point}}
+      Enrich the CSV with research data.
+
+  - id: emails
+    title: "Craft outreach emails for {{vertical}}"
+    assignee: writer
+    skills: [lead-email-craft, cold-email]
+    parents: [research]
+    priority: 1
+    body: |
+      Write hyper-personalized cold emails for each enriched lead.
+      Use brand voice from brand/voice-profile.md.{{#funnel_id}}
+      FUNNEL: Outreach serves funnel {{funnel_id}}. Read funnels/{{funnel_id}}-*.md for CTA and conversion path.
+      Each email's CTA must align with the funnel's next step. Specify buyer_stage and icp_segment per email.{{/funnel_id}}
+      Each email must reference specific research about the prospect.
+      Include 3 email sequence (initial + 2 follow-ups).
+      Output ready-to-send drafts in the outreach directory.
+
+  - id: send
+    title: "Send {{vertical}} outreach batch"
+    assignee: sender
+    skills: [send-email]
+    parents: [emails]
+    priority: 1
+    body: |
+      Send the crafted outreach emails using Resend or SMTP.
+      Track open rates and replies.
+      Log results back to the leads CSV.
+      BLOCK this task — human must approve emails before sending.
+
+  # Tournament Mode (Quality Gate v2.0)
+  #
+  # For any task that produces high-impact short-form copy (headlines, subject lines,
+  # hooks, CTAs, social post first lines), run the copywriting tournament BEFORE
+  # standard quality-gate:
+  #
+  # 1. Generate 3-5 variants
+  # 2. Spawn 5 parallel judge subagents (skeptic, scanner, buyer, expert, outsider)
+  #    Each loads persona from: ~/.claude/skills/quality-gate/judge-personas/{name}.md
+  # 3. Aggregate scores, pick winner
+  # 4. Winner enters standard quality-gate (single reviewer, pass/fail)
+  #
+  # See: Skill quality-gate for full tournament prompt templates and integration patterns.

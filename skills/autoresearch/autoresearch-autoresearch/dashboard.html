@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Autoresearch Dashboard — autoresearch</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 1000px; margin: 40px auto; padding: 20px; background: #fafafa; }
+        h1 { color: #333; }
+        .status { padding: 10px 20px; border-radius: 20px; display: inline-block; font-weight: bold; }
+        .status.running { background: #e3f2fd; color: #1976d2; }
+        .status.complete { background: #e8f5e9; color: #388e3c; }
+        .status.idle { background: #fff3e0; color: #f57c00; }
+        .score-display { font-size: 48px; color: #333; margin: 20px 0; }
+        .improvement { color: #388e3c; font-weight: bold; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #eee; }
+        th { background: #f5f5f5; }
+        .keep { background: #e8f5e9; }
+        .discard { background: #ffebee; }
+        .baseline { background: #e3f2fd; }
+        .chart-container { background: white; padding: 20px; border-radius: 8px; margin: 20px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        .eval-breakdown { background: white; padding: 20px; border-radius: 8px; margin: 20px 0; }
+        .eval-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #eee; }
+        .eval-bar { height: 8px; background: #e0e0e0; border-radius: 4px; flex: 1; margin: 0 10px; }
+        .eval-fill { height: 100%; background: #4caf50; border-radius: 4px; }
+    </style>
+</head>
+<body>
+    <h1>Autoresearch — Skill Optimization</h1>
+    <div id="status" class="status idle">Loading...</div>
+    
+    <div class="score-display">
+        <span id="current-score">—</span>/<span id="max-score">—</span>
+        <span id="pass-rate"></span>
+    </div>
+    
+    <div id="improvement"></div>
+    
+    <div class="chart-container">
+        <canvas id="scoreChart"></canvas>
+    </div>
+    
+    <h2>Experiments</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Score</th>
+                <th>Pass Rate</th>
+                <th>Status</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody id="experiments"></tbody>
+    </table>
+    
+    <h2>Eval Breakdown</h2>
+    <div class="eval-breakdown" id="eval-breakdown"></div>
+    
+    <script>
+        async function loadData() {
+            try {
+                const r = await fetch('results.json');
+                const data = await r.json();
+                
+                document.getElementById('status').textContent = data.status === 'running' ? 'Running experiment ' + data.current_experiment + '...' : data.status.toUpperCase();
+                document.getElementById('status').className = 'status ' + data.status;
+                
+                document.getElementById('current-score').textContent = data.best_score.toFixed(0);
+                document.getElementById('max-score').textContent = data.max_score || 7;
+                document.getElementById('pass-rate').textContent = ' (' + data.best_pass_rate + '%)';
+                
+                const improvement = data.best_score - data.baseline_score;
+                document.getElementById('improvement').innerHTML = improvement > 0 
+                    ? '<span class="improvement">+' + improvement.toFixed(1) + ' improvement from baseline</span>'
+                    : '';
+                
+                const experiments = document.getElementById('experiments');
+                experiments.innerHTML = data.experiments.map(e => 
+                    '<tr class="' + e.status + '"><td>' + e.id + '</td><td>' + e.score + '</td><td>' + e.pass_rate + '%</td><td>' + e.status + '</td><td>' + e.description + '</td></tr>'
+                ).join('');
+                
+                const evalHtml = data.eval_breakdown.map(e => {
+                    const pct = (e.pass_count / e.total * 100).toFixed(0);
+                    return '<div class="eval-item"><span>' + e.name + '</span><div class="eval-bar"><div class="eval-fill" style="width:' + pct + '%"></div></div><span>' + e.pass_count + '/' + e.total + '</span></div>';
+                }).join('');
+                document.getElementById('eval-breakdown').innerHTML = evalHtml;
+                
+                const ctx = document.getElementById('scoreChart').getContext('2d');
+                new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: data.experiments.map(e => '#' + e.id),
+                        datasets: [{
+                            label: 'Pass Rate %',
+                            data: data.experiments.map(e => e.pass_rate),
+                            borderColor: '#2196f3',
+                            backgroundColor: 'rgba(33,150,243,0.1)',
+                            fill: true,
+                            tension: 0.3
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        scales: { y: { min: 0, max: 100 } }
+                    }
+                });
+            } catch (e) { console.log('Waiting for data...'); }
+        }
+        loadData();
+        setInterval(loadData, 10000);
+    </script>
+</body>
+</html>

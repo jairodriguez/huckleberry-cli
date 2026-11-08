@@ -1,0 +1,337 @@
+{
+  "platform": "tiktok",
+  "description": "TikTok short-form hooks for 2026. Focus: First 2 seconds, watch time, relatability.",
+  "source": "TikTok algorithm analysis + viral patterns",
+  "updated": "2026-04-29",
+  "algorithm_priorities": {
+    "watch_time": "Primary ranking factor",
+    "hook_window": "First 2 seconds decide scroll or watch",
+    "completion_rate": "Full video watch signals quality"
+  },
+  "examples": [
+    {
+      "hook": "I can't believe this actually worked...",
+      "pattern": "Shock/Surprise Result",
+      "why_it_works": "Instant curiosity about what worked, relatable disbelief",
+      "platform": "tiktok"
+    },
+    {
+      "hook": "POV: You're trying to [relatable struggle]",
+      "pattern": "Relatable POV",
+      "why_it_works": "Immediate relatability, native TikTok format",
+      "platform": "tiktok"
+    },
+    {
+      "hook": "Why does nobody talk about...",
+      "pattern": "Hidden Truth Question",
+      "why_it_works": "Positions as insider knowledge, creates FOMO",
+      "platform": "tiktok"
+    },
+    {
+      "hook": "I tried [trend] for 30 days. Here's what happened.",
+      "pattern": "Challenge/Experiment Result",
+      "why_it_works": "Proven format, promises transformation reveal",
+      "platform": "tiktok"
+    },
+    {
+      "hook": "I found the AI tool that does [X] in 10 seconds instead of 10 hours.",
+      "pattern": "Speed Reveal",
+      "why_it_works": "Dramatic time comparison creates instant desire, specific numbers build credibility",
+      "emotion": "curiosity, envy",
+      "curiosity_gap": "high",
+      "platform": "tiktok",
+      "niche": "ai-agents",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": "There's a free AI tool that replaces a $500/mo subscription. Here it is:",
+      "pattern": "Cost Reveal",
+      "why_it_works": "Specific dollar figure creates urgency, 'free vs paid' contrast is irresistible",
+      "emotion": "curiosity, opportunity",
+      "curiosity_gap": "very high",
+      "platform": "tiktok",
+      "niche": "ai-agents",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": "What if I told you this entire video was made by an AI agent?",
+      "pattern": "Meta Reveal",
+      "why_it_works": "Self-referential hook creates instant engagement, challenges viewer assumptions",
+      "emotion": "surprise, curiosity",
+      "curiosity_gap": "high",
+      "platform": "tiktok",
+      "niche": "ai-agents",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": "The AI prompt that turned my side hustle into my main income.",
+      "pattern": "Transformation Promise",
+      "why_it_works": "Aspirational transformation, promises specific mechanism (the prompt)",
+      "emotion": "envy, curiosity",
+      "curiosity_gap": "very high",
+      "platform": "tiktok",
+      "niche": "ai-agents",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": "Stop paying for 12 subscriptions. One AI agent does all of it.",
+      "pattern": "Cost Waste",
+      "why_it_works": "Specific number (12 subscriptions) makes it personal, consolidation promise",
+      "emotion": "fear, frustration",
+      "curiosity_gap": "high",
+      "platform": "tiktok",
+      "niche": "ai-agents",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": "The businesses that survive 2026 will have one thing in common...",
+      "pattern": "Survival Signal",
+      "why_it_works": "Existential stakes, exclusivity promise, open loop",
+      "emotion": "fear, curiosity",
+      "curiosity_gap": "very high",
+      "platform": "tiktok",
+      "niche": "ai-agents",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": "I waited too long to learn AI agents. Don't make my mistake.",
+      "pattern": "Regret Story",
+      "why_it_works": "Personal vulnerability, warns viewer of same fate, time pressure",
+      "emotion": "fear, urgency",
+      "curiosity_gap": "high",
+      "platform": "tiktok",
+      "niche": "ai-agents",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": "My AI agent closed 3 deals while I was sleeping last night.",
+      "pattern": "Passive Results",
+      "why_it_works": "Passive income dream made real, specific number (3 deals), happened overnight",
+      "emotion": "envy, curiosity",
+      "curiosity_gap": "very high",
+      "platform": "tiktok",
+      "niche": "ai-agents",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": "I replaced my $8K/mo team with $200/mo in AI tools. Here's the stack:",
+      "pattern": "Cost Replacement",
+      "why_it_works": "Dramatic cost contrast ($8K vs $200), promises full reveal of stack",
+      "emotion": "envy, curiosity",
+      "curiosity_gap": "very high",
+      "platform": "tiktok",
+      "niche": "ai-agents",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": "POV: You built an AI agent that handles your entire inbox while you sleep.",
+      "pattern": "Aspirational POV",
+      "why_it_works": "Native TikTok format, aspirational scenario, relatable pain point (inbox)",
+      "emotion": "envy, desire",
+      "curiosity_gap": "high",
+      "platform": "tiktok",
+      "niche": "ai-agents",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": "I went from 0 to $10K/mo in 90 days. My only employee is an AI.",
+      "pattern": "Rags to Riches",
+      "why_it_works": "Specific transformation (0 to $10K), timeframe (90 days), surprising employee",
+      "emotion": "envy, curiosity",
+      "curiosity_gap": "very high",
+      "platform": "tiktok",
+      "niche": "ai-agents",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": "ChatGPT keeps giving you generic answers because you're prompting wrong. Here's the fix:",
+      "pattern": "Common Mistake",
+      "why_it_works": "Calls out universal frustration, promises immediate fix, positions viewer as at fault (not the tool)",
+      "emotion": "frustration, curiosity",
+      "curiosity_gap": "high",
+      "platform": "tiktok",
+      "niche": "ai-agents",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": "I was spending 4 hours/day on emails. Then I built an AI agent that does it in 8 minutes.",
+      "pattern": "Time Pain to Solution",
+      "why_it_works": "Specific pain (4 hours), dramatic reduction (8 minutes), DIY approach",
+      "emotion": "frustration, curiosity",
+      "curiosity_gap": "very high",
+      "platform": "tiktok",
+      "niche": "ai-agents",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": "POV: You're trying to automate your workflow and every tutorial is 3 hours long. Here's the 2-minute version.",
+      "pattern": "Relatable Struggle",
+      "why_it_works": "POV format, calls out real frustration, promises shortcut",
+      "emotion": "frustration, relief",
+      "curiosity_gap": "high",
+      "platform": "tiktok",
+      "niche": "ai-agents",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": "Stop using ChatGPT like Google. You're wasting it. Here's how power users actually prompt:",
+      "pattern": "Correction",
+      "why_it_works": "Provocative correction, insider knowledge promise, power user framing",
+      "emotion": "frustration, status",
+      "curiosity_gap": "very high",
+      "platform": "tiktok",
+      "niche": "ai-agents",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": "Everyone says 'just use AI' but nobody shows you the actual setup. Here's mine:",
+      "pattern": "Gap Fill",
+      "why_it_works": "Calls out universal gap between advice and execution, promises real walkthrough",
+      "emotion": "frustration, curiosity",
+      "curiosity_gap": "very high",
+      "platform": "tiktok",
+      "niche": "ai-agents",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": "The reason your AI outputs suck isn't the model. It's your prompt structure. Let me show you:",
+      "pattern": "Reframe Problem",
+      "why_it_works": "Reframes blame (not AI's fault, yours), promises structural fix, specific solution",
+      "emotion": "frustration, curiosity",
+      "curiosity_gap": "high",
+      "platform": "tiktok",
+      "niche": "ai-agents",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": "I tried 47 AI tools so you don't have to. 44 of them were garbage. These 3 actually deliver:",
+      "pattern": "Filtered Results",
+      "why_it_works": "Massive effort signal (47 tools), surprising ratio (44 garbage), narrow recommendation",
+      "emotion": "frustration, curiosity",
+      "curiosity_gap": "very high",
+      "platform": "tiktok",
+      "niche": "ai-agents",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": "I automated my entire content pipeline. 30 posts/week, 0 hours of manual work. The setup took 2 hours.",
+      "pattern": "Effortless Output",
+      "why_it_works": "Specific output (30 posts), zero manual work, one-time setup (2 hours)",
+      "emotion": "envy, curiosity",
+      "curiosity_gap": "very high",
+      "platform": "tiktok",
+      "niche": "ai-agents",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": "I gave an AI agent access to my calendar, email, and to-do list. After 30 days, I got 11 hours back every week.",
+      "pattern": "Time Liberation",
+      "why_it_works": "Specific integration (calendar, email, todo), timeframe (30 days), tangible result (11 hours)",
+      "emotion": "curiosity, envy",
+      "curiosity_gap": "very high",
+      "platform": "tiktok",
+      "niche": "ai-agents",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": "The ROI on a single glamping tent will shock you",
+      "pattern": "Shock ROI Reveal",
+      "why_it_works": "Curiosity gap about specific returns, 'shock you' promises surprising numbers, B2B audience loves ROI data",
+      "emotion": "curiosity, surprise",
+      "curiosity_gap": "very high",
+      "platform": "tiktok",
+      "niche": "enchantents-glamping",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": "$80K investment. $240K revenue in year one. Here's the math.",
+      "pattern": "Investment-to-Revenue Reveal",
+      "why_it_works": "Specific numbers create instant credibility, 3x return promise, 'here's the math' promises proof",
+      "emotion": "envy, curiosity",
+      "curiosity_gap": "very high",
+      "platform": "tiktok",
+      "niche": "enchantents-glamping",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": "Why most glamping businesses fail in year 1 (and how the ones that don't all do this)",
+      "pattern": "Failure Study + Success Signal",
+      "why_it_works": "Fear of failure hooks attention, 'all do this' promises single insight, B2B operators fear year-1 collapse",
+      "emotion": "fear, curiosity",
+      "curiosity_gap": "very high",
+      "platform": "tiktok",
+      "niche": "enchantents-glamping",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": "This empty field generates $150K/year now. Here's what we built.",
+      "pattern": "Before/After Revenue Transformation",
+      "why_it_works": "Empty field = zero value → $150K is dramatic contrast, 'what we built' promises visual reveal",
+      "emotion": "envy, curiosity",
+      "curiosity_gap": "very high",
+      "platform": "tiktok",
+      "niche": "enchantents-glamping",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": "Your hotel occupancy drops to 30% in off-season. Glamping operators keep 80%+ year-round.",
+      "pattern": "Pain Point Contrast",
+      "why_it_works": "Specific occupancy numbers create instant recognition, 30% vs 80% is dramatic, seasonal pain is universal in hospitality",
+      "emotion": "frustration, envy",
+      "curiosity_gap": "high",
+      "platform": "tiktok",
+      "niche": "enchantents-glamping",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": "I analyzed 50 glamping sites. The profitable ones had ONE thing in common.",
+      "pattern": "Research + Single Insight",
+      "why_it_works": "Large sample (50 sites), elite segment (profitable ones), single differentiator promise, research authority",
+      "emotion": "curiosity, credibility",
+      "curiosity_gap": "very high",
+      "platform": "tiktok",
+      "niche": "enchantents-glamping",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": "The resorts charging $500/night all use this approach",
+      "pattern": "Elite Authority Signal",
+      "why_it_works": "$500/night signals premium tier, 'all use this' promises universal success factor, status aspiration",
+      "emotion": "status, curiosity",
+      "curiosity_gap": "very high",
+      "platform": "tiktok",
+      "niche": "enchantents-glamping",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": "Your land is sitting empty while competitors generate $450/night from glamping tents",
+      "pattern": "Competitive Loss Aversion",
+      "why_it_works": "Direct comparison triggers loss aversion, specific revenue ($450/night), 'sitting empty' is visual and painful",
+      "emotion": "fear, envy",
+      "curiosity_gap": "high",
+      "platform": "tiktok",
+      "niche": "enchantents-glamping",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": "Most glamping tent manufacturers won't tell you about hidden costs. We will.",
+      "pattern": "Honest Transparency",
+      "why_it_works": "Calls out industry opacity, positions brand as trustworthy, 'we will' promises valuable insider info",
+      "emotion": "trust, curiosity",
+      "curiosity_gap": "very high",
+      "platform": "tiktok",
+      "niche": "enchantents-glamping",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": "I've helped install 200+ glamping tents. Here's what the best operators do differently.",
+      "pattern": "Authority + Elite Behavior",
+      "why_it_works": "Massive authority (200+ installs), 'best operators' signals elite insight, actionable promise",
+      "emotion": "status, curiosity",
+      "curiosity_gap": "very high",
+      "platform": "tiktok",
+      "niche": "enchantents-glamping",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    }
+  ]
+}

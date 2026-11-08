@@ -1,0 +1,275 @@
+{
+  "platform": "youtube",
+  "description": "YouTube video hooks for 2026. Focus: First 8 seconds, title optimization, problem-solution patterns.",
+  "source": "YouTube algorithm research + high-performing creators",
+  "updated": "2026-04-29",
+  "algorithm_priorities": {
+    "watch_time": "Primary ranking factor",
+    "hook_window": "First 8 seconds decide viewer retention",
+    "title_seo": "Keywords at beginning for search"
+  },
+  "voice_requirements": {
+    "tone": "Conversational, educational, authoritative",
+    "structure": "Problem → Solution promise → Value preview in first 8 seconds",
+    "forbidden": ["Clickbait without payoff", "Slow intros", "Generic promises"]
+  },
+  "examples": [
+    {
+      "hook": {
+        "opening_line": "The biggest mistake [audience] make is...",
+        "title": "The Biggest Mistake [Audience] Make (And How to Fix It)"
+      },
+      "why_it_works": "Identifies common pain point immediately, promises solution in title",
+      "pattern": "Problem Reveal + Solution Promise",
+      "platform": "youtube"
+    },
+    {
+      "hook": {
+        "opening_line": "By the end of this video, you'll know exactly how to...",
+        "title": "How to [Desired Outcome] in [Timeframe] (Step-by-Step Guide)"
+      },
+      "why_it_works": "Clear promise upfront, specific outcome, actionable format",
+      "pattern": "Bold Promise + Outcome",
+      "platform": "youtube"
+    },
+    {
+      "hook": {
+        "opening_line": "I built [impressive thing] in [timeframe]. Here's the result...",
+        "title": "I Built [Thing] in [Timeframe] - Here's What Happened"
+      },
+      "why_it_works": "Shows result first (pattern interrupt), creates curiosity about process",
+      "pattern": "Result-First + Process Tease",
+      "platform": "youtube"
+    },
+    {
+      "hook": {
+        "opening_line": "Everyone says [common advice]. But [contrarian truth].",
+        "title": "[Contrarian Take] That Nobody Talks About"
+      },
+      "why_it_works": "Challenges assumptions, positions as insider knowledge",
+      "pattern": "Contrarian Challenge",
+      "platform": "youtube"
+    },
+    {
+      "hook": {
+        "opening_line": "This free AI tool replaces a $500/mo subscription. Let me show you exactly how.",
+        "title": "Free AI Tool That Replaces a $500/Month Subscription"
+      },
+      "why_it_works": "Specific dollar figure, free vs paid contrast, tutorial promise in opening line",
+      "pattern": "Cost Reveal + Tutorial",
+      "emotion": "curiosity, opportunity",
+      "curiosity_gap": "very high",
+      "platform": "youtube",
+      "niche": "ai-agents",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": {
+        "opening_line": "I tested 47 AI tools over 6 months. 44 of them were garbage. These are the 3 I actually use every day.",
+        "title": "I Tested 47 AI Tools (Only 3 Are Worth It)"
+      },
+      "why_it_works": "Massive effort signal (47 tools), narrow result (3), daily use validation, honest filtering",
+      "pattern": "Filtered Results",
+      "emotion": "curiosity, trust",
+      "curiosity_gap": "very high",
+      "platform": "youtube",
+      "niche": "ai-agents",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": {
+        "opening_line": "I gave an AI agent access to my calendar, email, and to-do list. After 30 days, I got 11 hours back every week. Here's exactly what happened.",
+        "title": "I Let an AI Agent Run My Life for 30 Days (Saved 11 Hours/Week)"
+      },
+      "why_it_works": "Personal experiment, specific integrations, timeframe (30 days), tangible result (11 hours)",
+      "pattern": "Time Liberation + Experiment",
+      "emotion": "curiosity, envy",
+      "curiosity_gap": "very high",
+      "platform": "youtube",
+      "niche": "ai-agents",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": {
+        "opening_line": "I replaced my $8K/mo team with $200/mo in AI tools. This is the exact stack and setup.",
+        "title": "How I Replaced My $8K/Month Team With AI ($200/Month)"
+      },
+      "why_it_works": "Dramatic cost contrast ($8K vs $200), exact stack promise, step-by-step expectation",
+      "pattern": "Cost Replacement + Stack Reveal",
+      "emotion": "envy, curiosity",
+      "curiosity_gap": "very high",
+      "platform": "youtube",
+      "niche": "ai-agents",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": {
+        "opening_line": "Stop using ChatGPT like Google. Here's how power users actually prompt — and it changes everything.",
+        "title": "Stop Using ChatGPT Like Google (Power User Prompting Guide)"
+      },
+      "why_it_works": "Provocative correction, power user positioning, promises method upgrade",
+      "pattern": "Correction + Power User Method",
+      "emotion": "frustration, status",
+      "curiosity_gap": "very high",
+      "platform": "youtube",
+      "niche": "ai-agents",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": {
+        "opening_line": "I automated my entire content pipeline — 30 posts per week with zero hours of manual work. The setup took 2 hours. Let me walk you through it.",
+        "title": "How I Automated 30 Posts/Week With Zero Manual Work (2-Hour Setup)"
+      },
+      "why_it_works": "Specific output (30 posts/week), zero manual work claim, setup time (2 hours), walkthrough promise",
+      "pattern": "Effortless Output + Tutorial",
+      "emotion": "envy, curiosity",
+      "curiosity_gap": "very high",
+      "platform": "youtube",
+      "niche": "ai-agents",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": {
+        "opening_line": "Everyone says 'just use AI' but nobody shows the actual setup. Today I'm showing you mine, step by step.",
+        "title": "The AI Setup Nobody Shows You (Complete Walkthrough)"
+      },
+      "why_it_works": "Calls out universal frustration, promises real walkthrough, gap in the market",
+      "pattern": "Gap Fill + Walkthrough",
+      "emotion": "frustration, relief",
+      "curiosity_gap": "very high",
+      "platform": "youtube",
+      "niche": "ai-agents",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": {
+        "opening_line": "I analyzed 50 glamping sites and the profitable ones all had one thing in common. It wasn't location.",
+        "title": "I Analyzed 50 Glamping Sites — The Winners All Did THIS (Not Location)"
+      },
+      "why_it_works": "Research authority (50 sites), contrarian finding (not location), single insight promise, B2B audience",
+      "pattern": "Research + Contrarian Finding",
+      "emotion": "curiosity, surprise",
+      "curiosity_gap": "very high",
+      "platform": "youtube",
+      "niche": "enchantents-glamping",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": {
+        "opening_line": "$80K investment. $240K revenue in year one. I'm going to show you the exact math behind a 4-tent glamping setup.",
+        "title": "The Glamping ROI Nobody Talks About ($80K → $240K Year One)"
+      },
+      "why_it_works": "Stacked specific numbers, 3x return promise, tutorial format, financial breakdown attracts investors",
+      "pattern": "Revenue Stack + Math Breakdown",
+      "emotion": "envy, curiosity",
+      "curiosity_gap": "very high",
+      "platform": "youtube",
+      "niche": "enchantents-glamping",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": {
+        "opening_line": "This empty field generates $150K a year now. Let me walk you through exactly how we transformed it in 6 weeks.",
+        "title": "How We Turned Empty Land Into $150K/Year Glamping (6-Week Build)"
+      },
+      "why_it_works": "Before/after with specific revenue, timeframe (6 weeks), walkthrough promise, transformation arc",
+      "pattern": "Before/After + Walkthrough",
+      "emotion": "envy, curiosity",
+      "curiosity_gap": "very high",
+      "platform": "youtube",
+      "niche": "enchantents-glamping",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": {
+        "opening_line": "Most glamping businesses fail in year one. I've watched it happen 200 times. Here are the 3 mistakes that kill them.",
+        "title": "Why Most Glamping Businesses FAIL (3 Mistakes I've Seen 200 Times)"
+      },
+      "why_it_works": "Massive authority (200 times), failure prevention, numbered list, B2B operators fear year-1 collapse",
+      "pattern": "Failure Prevention + Authority",
+      "emotion": "fear, curiosity",
+      "curiosity_gap": "very high",
+      "platform": "youtube",
+      "niche": "enchantents-glamping",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": {
+        "opening_line": "Your hotel drops to 30% occupancy in off-season. Glamping operators keep 80%+ year-round. Today I'll show you exactly how they do it.",
+        "title": "Hotels: 30% Occupancy | Glamping: 80%+ Year-Round (The Strategy)"
+      },
+      "why_it_works": "Specific occupancy comparison, universal hospitality pain, strategy reveal promise, seasonal revenue hook",
+      "pattern": "Pain Point Contrast + Strategy Reveal",
+      "emotion": "frustration, curiosity",
+      "curiosity_gap": "very high",
+      "platform": "youtube",
+      "niche": "enchantents-glamping",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": {
+        "opening_line": "The resorts charging $500 a night for glamping all use the same tent design. I'm going to show you what it is and why it works.",
+        "title": "Why $500/Night Resorts All Use This Same Glamping Tent Design"
+      },
+      "why_it_works": "Premium pricing ($500/night), universal choice among elite, design reveal, status aspiration",
+      "pattern": "Elite Consensus + Design Reveal",
+      "emotion": "status, curiosity",
+      "curiosity_gap": "very high",
+      "platform": "youtube",
+      "niche": "enchantents-glamping",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": {
+        "opening_line": "Most glamping tent manufacturers hide the real costs. I'm going to give you an honest breakdown of every single expense.",
+        "title": "The Real Cost of a Glamping Setup (What Sellers Won't Tell You)"
+      },
+      "why_it_works": "Transparency positioning, forbidden knowledge framing, honest breakdown promise, buyers trust transparency",
+      "pattern": "Honest Transparency + Cost Breakdown",
+      "emotion": "trust, curiosity",
+      "curiosity_gap": "very high",
+      "platform": "youtube",
+      "niche": "enchantents-glamping",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": {
+        "opening_line": "I've helped install 200+ glamping tents across 12 countries. Here's what the best operators do differently from everyone else.",
+        "title": "200+ Glamping Installs Later: What the Best Operators Do Differently"
+      },
+      "why_it_works": "Massive authority (200+, 12 countries), elite behavior study, differentiation promise, global experience",
+      "pattern": "Authority + Elite Behavior Study",
+      "emotion": "status, curiosity",
+      "curiosity_gap": "very high",
+      "platform": "youtube",
+      "niche": "enchantents-glamping",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": {
+        "opening_line": "A resort owner in Costa Rica was about to spend $600K building hotel rooms. I showed him a glamping alternative for $180K. Same nightly rate. Higher occupancy. Here's the full comparison.",
+        "title": "Hotel Rooms vs Glamping Tents: $600K vs $180K (Full Comparison)"
+      },
+      "why_it_works": "Real scenario, dramatic cost difference ($600K vs $180K), same rate + better results, comparison format",
+      "pattern": "Cost Comparison + Real Scenario",
+      "emotion": "surprise, opportunity",
+      "curiosity_gap": "very high",
+      "platform": "youtube",
+      "niche": "enchantents-glamping",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": {
+        "opening_line": "Your land is sitting empty while competitors generate $450 per night from glamping tents. Here's how to calculate what your property could earn.",
+        "title": "How Much Can Your Land Earn With Glamping? (ROI Calculator Walkthrough)"
+      },
+      "why_it_works": "Competitive loss aversion, specific rate ($450/night), calculator tutorial, actionable for landowners",
+      "pattern": "Competitive Loss + ROI Calculator",
+      "emotion": "fear, curiosity",
+      "curiosity_gap": "very high",
+      "platform": "youtube",
+      "niche": "enchantents-glamping",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    }
+  ]
+}

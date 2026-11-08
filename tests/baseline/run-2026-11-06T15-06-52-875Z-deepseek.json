@@ -1,0 +1,49 @@
+{
+  "runId": "2026-11-06T15-06-52-875Z-deepseek",
+  "adapterId": "deepseek",
+  "adapterStatus": {
+    "ready": true,
+    "detail": "openrouter · 453 models · deepseek/deepseek-v4.1-flash"
+  },
+  "persistedDefault": null,
+  "manifestVersion": "1.0.0",
+  "results": [
+    {
+      "id": "agc-06-social-post-gated",
+      "name": "Social post behind approval gate",
+      "status": "ok",
+      "pass": true,
+      "failures": [],
+      "costUsd": 0.001191,
+      "usage": {
+        "input": 220,
+        "output": 2080,
+        "cacheHit": 0,
+        "cacheMiss": 220
+      },
+      "durationMs": 9345,
+      "outputLen": 988
+    }
+  ],
+  "summary": {
+    "runId": "2026-11-06T15-06-52-875Z-deepseek",
+    "finishedAt": "2026-11-06T15:07:02.222Z",
+    "telemetryFile": "/Users/clawdbot/clawd/huckleberry/tests/baseline/telemetry-2026-11-06T15-06-52-875Z-deepseek.jsonl",
+    "tasks": 1,
+    "ok": 1,
+    "failed": 0,
+    "tokensIn": 220,
+    "tokensOut": 2080,
+    "costUsd": 0.001191,
+    "byAdapter": {
+      "deepseek": {
+        "tasks": 1,
+        "ok": 1,
+        "failed": 0,
+        "tokensIn": 220,
+        "tokensOut": 2080,
+        "costUsd": 0.001191
+      }
+    }
+  }
+}

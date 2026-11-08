@@ -1,0 +1,77 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "harness-policy": {
+    "default": "opencode",
+    "selection": "capability-matched, then cost-optimized",
+    "rules": {
+      "toolsRequired": "opencode",
+      "costOptimized": "deepseek",
+      "requireApprovalAboveCostUsd": 5,
+      "requireApprovalAboveTokens": 50000,
+      "escalateOnConsecutiveFailures": 2
+    }
+  },
+  "mcp": {
+    "inkstone": {
+      "type": "local",
+      "command": [
+        "node",
+        "{{USERPROFILE}}/.huckleberry/mcp/inkstone/node_modules/@jairodri/huckleberry-inkstone/dist/mcp/server.js"
+      ],
+      "enabled": true,
+      "environment": {
+        "INKSTONE_DB": "{{USERPROFILE}}/.huckleberry/inkstone.db"
+      }
+    },
+    "context7": {
+      "type": "local",
+      "command": [
+        "npx",
+        "-y",
+        "@context7/server"
+      ],
+      "enabled": true
+    },
+    "jev": {
+      "type": "local",
+      "command": [
+        "node",
+        "{{USERPROFILE}}/.huckleberry/mcp/jev-mcp/node_modules/@jkudish/jev-mcp/dist/index.js"
+      ],
+      "enabled": true,
+      "environment": {
+        "TYPESAFE_API_KEY": ""
+      }
+    }
+  },
+  "permission": {
+    "doom_loop": "deny"
+  },
+  "plugin": [
+    "./plugin/env-inject.ts",
+    "./plugin/inkstone-gate.ts"
+  ],
+  "compaction": {
+    "mode": "safeguard",
+    "threshold": 0.85,
+    "reserveTokens": 24000
+  },
+  "agent": {
+    "build": {
+      "description": "Default executor. Runs tools, writes files, completes tasks."
+    },
+    "plan": {
+      "description": "Read-only strategy and analysis. Research tasks only."
+    },
+    "researcher": {
+      "description": "Web research, intelligence gathering, competitive analysis."
+    },
+    "hermes": {
+      "description": "System administrator. Diagnoses and repairs the Huckleberry stack (kimaki, Discord, opencode, Inkstone, Jev).",
+      "prompt": "You are Hermes, the Huckleberry system administrator. At session start, BEFORE any work, read: ~/.huckleberry/agents/hermes/SOUL.md, ~/.huckleberry/agents/hermes/AGENTS.md, ~/.huckleberry/agents/hermes/hermes-fixer.md, and the wiki files in ~/.huckleberry/wiki/ (kimaki.md, discord.md, opencode.md, inkstone.md, doctor.md). When something breaks: diagnose first (or run `huckleberry doctor`), fix the root cause, verify every fix with a live test, and never print secret values. Escalate after 3 real failed attempts with what you tried, exact errors, and your recommended next step."
+    }
+  },
+  "instructions": [
+    "{{USERPROFILE}}/.huckleberry/business-context-gate.md"
+  ]
+}

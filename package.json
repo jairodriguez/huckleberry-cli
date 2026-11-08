@@ -1,0 +1,55 @@
+{
+  "name": "@jairodri/huckleberry-cli",
+  "version": "1.1.1",
+  "description": "Huckleberry AI System — one-command sovereign AI operations department",
+  "type": "module",
+  "bin": {
+    "huckleberry": "./bin/huckleberry.js"
+  },
+  "main": "./src/cli.js",
+  "engines": {
+    "node": ">=18"
+  },
+  "files": [
+    "bin/",
+    "src/",
+    "templates/",
+    "agents/",
+    "plugins/",
+    "mcp/",
+    "skills/",
+    "kanban/",
+    "taskmaster/",
+    "scripts/",
+    "wiki/"
+  ],
+  "scripts": {
+    "sync-skills": "node scripts/sync-skills.mjs",
+    "postinstall": "node src/postinstall.js || true"
+  },
+  "keywords": [
+    "huckleberry",
+    "ai",
+    "sovereign",
+    "ai-agents",
+    "opencode",
+    "kimaki",
+    "cos",
+    "hermes",
+    "memory",
+    "inkstone",
+    "cro"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jairodriguez/huckleberry-cli.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "homepage": "https://github.com/jairodriguez/huckleberry-cli#readme",
+  "bugs": {
+    "url": "https://github.com/jairodriguez/huckleberry-cli/issues"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "runId": "2026-11-05T02-53-37-951Z-opencode",
+  "finishedAt": "2026-11-05T03:23:29.950Z",
+  "telemetryFile": "/Users/clawdbot/clawd/huckleberry/tests/baseline/telemetry-2026-11-05T02-53-37-951Z-opencode.jsonl",
+  "tasks": 3,
+  "ok": 2,
+  "failed": 1,
+  "tokensIn": 0,
+  "tokensOut": 0,
+  "costUsd": 0,
+  "byAdapter": {
+    "opencode": {
+      "tasks": 3,
+      "ok": 2,
+      "failed": 1,
+      "tokensIn": 0,
+      "tokensOut": 0,
+      "costUsd": 0
+    }
+  }
+}

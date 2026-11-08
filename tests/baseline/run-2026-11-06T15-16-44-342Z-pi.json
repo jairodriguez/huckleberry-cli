@@ -1,0 +1,50 @@
+{
+  "runId": "2026-11-06T15-16-44-342Z-pi",
+  "adapterId": "pi",
+  "adapterStatus": {
+    "ready": true,
+    "detail": "pi 1.5.0"
+  },
+  "persistedDefault": null,
+  "manifestVersion": "1.0.0",
+  "results": [
+    {
+      "id": "agc-05-bilingual-reply",
+      "name": "Bilingual EN/ES reply",
+      "status": "ok",
+      "pass": true,
+      "failures": [],
+      "costUsd": 0,
+      "usage": {
+        "input": 0,
+        "output": 0
+      },
+      "durationMs": 4027,
+      "outputLen": 1143,
+      "output": "**English**\n\nHi! Thank you for reaching out — yes, we do cater quinceañeras, and we'd love to be part of yours. A celebration for around 90 guests in September sounds wonderful.\n\nTo put together an accurate proposal, could you share the exact date and the venue you're planning to use? Once we have those, we can talk through menu options, service style, and pricing.\n\nWe'd also love to invite you to a tasting so you can try the dishes before deciding — we can arrange that once we confirm the date and venue.\n\nLooking forward to hearing from you!\n\n**Español**\n\n¡Hola! Gracias por escribirnos — sí, hacemos catering para quinceañeras y nos encantaría formar parte de la tuya. Una celebración de unas 90 personas en septiembre suena maravillosa.\n\nPara preparar una propuesta precisa, ¿podrías compartirnos la fecha exacta y el salón o lugar donde la planean realizar? Con esos datos podemos revisar opciones de menú, tipo de servicio y precios.\n\nTambién nos encantaría invitarte a una degustación para que pruebes los platillos antes de decidir — la podemos coordinar una vez confirmados la fecha y el lugar.\n\n¡Quedamos atentos a tu respuesta!"
+    }
+  ],
+  "summary": {
+    "runId": "2026-11-06T15-16-44-342Z-pi",
+    "finishedAt": "2026-11-06T15:16:48.371Z",
+    "telemetryFile": "/Users/clawdbot/clawd/huckleberry/tests/baseline/telemetry-2026-11-06T15-16-44-342Z-pi.jsonl",
+    "tasks": 1,
+    "ok": 1,
+    "failed": 0,
+    "tokensIn": 0,
+    "tokensOut": 0,
+    "costUsd": 0,
+    "byAdapter": {
+      "pi": {
+        "tasks": 1,
+        "ok": 1,
+        "failed": 0,
+        "tokensIn": 0,
+        "tokensOut": 0,
+        "costUsd": 0
+      }
+    },
+    "checksPassed": 1,
+    "checksTotal": 1
+  }
+}

@@ -1,0 +1,2 @@
+{"ts":"2026-11-06T15:24:34.893Z","runId":"2026-11-06T15-24-34-892Z-deepseek","event":"run-start"}
+{"ts":"2026-11-06T15:25:15.158Z","runId":"2026-11-06T15-24-34-892Z-deepseek","taskId":"agc-02-quote-draft","adapterId":"deepseek","model":"deepseek/deepseek-v4.1-flash","status":"ok","usage":{"input":223,"output":4096,"cacheHit":0,"cacheMiss":223},"costUsd":0.002334,"durationMs":40263}

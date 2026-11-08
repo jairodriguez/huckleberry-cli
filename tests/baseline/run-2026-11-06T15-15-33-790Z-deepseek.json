@@ -1,0 +1,52 @@
+{
+  "runId": "2026-11-06T15-15-33-790Z-deepseek",
+  "adapterId": "deepseek",
+  "adapterStatus": {
+    "ready": true,
+    "detail": "openrouter · 417 models · deepseek/deepseek-v4.1-flash"
+  },
+  "persistedDefault": null,
+  "manifestVersion": "1.0.0",
+  "results": [
+    {
+      "id": "agc-01-booking-inquiry",
+      "name": "Booking inquiry handling",
+      "status": "ok",
+      "pass": true,
+      "failures": [],
+      "costUsd": 0.000674,
+      "usage": {
+        "input": 227,
+        "output": 1168,
+        "cacheHit": 0,
+        "cacheMiss": 227
+      },
+      "durationMs": 10783,
+      "outputLen": 1112,
+      "output": "Hi! Thanks for reaching out — yes, we cater weddings and events in Fort McMurray. A 120-person reception with Latin fusion and vegetarian options is a great fit. We don’t publish a fixed per-plate price because it depends on the date, venue, menu, and service style, so I’ll need a few details before I can put together a tailored proposal:\n\n- Headcount: Is 120 a confirmed guest count or an estimate? Any children/vendors to include?\n- Date: Which Saturday in August are you considering — or your top 2 dates?\n- Venue: Do you have a confirmed venue and address, or are you still shortlisting? I won’t assume venue availability; we’ll need the venue confirmed before finalizing service details.\n- Menu direction: For Latin fusion, are you thinking buffet, family-style, plated, or stations? Any specific dishes/cuisines you love?\n- Vegetarian needs: Roughly how many vegetarian guests, and are there vegan, gluten-free, or allergy requirements?\n- Service/timing: Event start time and when you’d like dinner service to begin.\n\nSend those over and I’ll follow up with next steps and a tailored proposal for review."
+    }
+  ],
+  "summary": {
+    "runId": "2026-11-06T15-15-33-790Z-deepseek",
+    "finishedAt": "2026-11-06T15:15:44.574Z",
+    "telemetryFile": "/Users/clawdbot/clawd/huckleberry/tests/baseline/telemetry-2026-11-06T15-15-33-790Z-deepseek.jsonl",
+    "tasks": 1,
+    "ok": 1,
+    "failed": 0,
+    "tokensIn": 227,
+    "tokensOut": 1168,
+    "costUsd": 0.000674,
+    "byAdapter": {
+      "deepseek": {
+        "tasks": 1,
+        "ok": 1,
+        "failed": 0,
+        "tokensIn": 227,
+        "tokensOut": 1168,
+        "costUsd": 0.000674
+      }
+    },
+    "checksPassed": 1,
+    "checksTotal": 1
+  }
+}

@@ -1,0 +1,113 @@
+#!/bin/bash
+# Self-Improving Agent CLI Wrapper
+
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PYTHON_SCRIPT="$SCRIPT_DIR/self_improving_agent.py"
+
+# Colors for output
+RED='\033[0;31m'
+GREEN='\033[0;32m'
+YELLOW='\033[1;33m'
+BLUE='\033[0;34m'
+NC='\033[0m' # No Color
+
+usage() {
+    cat << EOF
+Usage: self-improving-agent <command> [options]
+
+Commands:
+  check <topic>           Check if agent has expertise on topic
+  research <topic>        Research topic (quick scan)
+  master <topic>          Full mastery pipeline (research + persist)
+  status [topic]          Show expertise status for topic or all topics
+  expertise               List all mastered topics for agent
+  find-expert <topic>     Find best agent for topic
+
+Options:
+  --agent <name>          Agent name (default: clawd)
+  --depth <level>         Research depth: quick|standard|deep (default: deep)
+  --format <type>         Output format: json|markdown (default: json)
+  -h, --help              Show this help
+
+Examples:
+  self-improving-agent check "Google Ads conversion tracking"
+  self-improving-agent master "Rust async patterns" --depth=deep
+  self-improving-agent status "WebRTC"
+  self-improving-agent expertise --agent=harper
+  self-improving-agent find-expert "vector databases"
+
+Environment Variables:
+  GEMINI_API_KEY          Required for youtube-summarize
+  NOTEBOLLM_COOKIES_PATH  Path to NotebookLM cookies (default: ~/.notebooklm)
+EOF
+}
+
+# Parse arguments
+COMMAND=""
+TOPIC=""
+AGENT="clawd"
+DEPTH="deep"
+FORMAT="json"
+
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        check|research|master|status|expertise|find-expert)
+            COMMAND="$1"
+            shift
+            ;;
+        --agent)
+            AGENT="$2"
+            shift 2
+            ;;
+        --depth)
+            DEPTH="$2"
+            shift 2
+            ;;
+        --format)
+            FORMAT="$2"
+            shift 2
+            ;;
+        -h|--help)
+            usage
+            exit 0
+            ;;
+        *)
+            if [[ -z "$TOPIC" ]]; then
+                TOPIC="$1"
+            fi
+            shift
+            ;;
+    esac
+done
+
+if [[ -z "$COMMAND" ]]; then
+    echo -e "${RED}Error: No command specified${NC}"
+    usage
+    exit 1
+fi
+
+# Check for required topic
+if [[ "$COMMAND" != "expertise" && -z "$TOPIC" ]]; then
+    echo -e "${RED}Error: Topic required for $COMMAND command${NC}"
+    usage
+    exit 1
+fi
+
+# Verify Python script exists
+if [[ ! -f "$PYTHON_SCRIPT" ]]; then
+    echo -e "${RED}Error: Python script not found at $PYTHON_SCRIPT${NC}"
+    exit 1
+fi
+
+# Run the Python script
+echo -e "${BLUE}🤖 Self-Improving Agent${NC} | Agent: ${GREEN}$AGENT${NC} | Command: ${YELLOW}$COMMAND${NC}"
+if [[ -n "$TOPIC" ]]; then
+    echo -e "   Topic: ${YELLOW}$TOPIC${NC}"
+fi
+
+python3 "$PYTHON_SCRIPT" "$COMMAND" "$TOPIC" \
+    --agent "$AGENT" \
+    --depth "$DEPTH" \
+    --format "$FORMAT"

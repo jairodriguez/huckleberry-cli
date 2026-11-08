@@ -1,0 +1,181 @@
+{
+  "platform": "medium",
+  "description": "Medium article hooks for 2026. Focus: Authority, depth, thought leadership.",
+  "source": "Medium top performers + cross-posting patterns",
+  "updated": "2026-04-29",
+  "voice_requirements": {
+    "tone": "Thoughtful, authoritative, depth over virality",
+    "structure": "Similar to LinkedIn but longer (1500-3000 words)",
+    "seo": "Cross-post from blog with canonical URL"
+  },
+  "examples": [
+    {
+      "hook": "I [did surprising thing]. Here's what I learned.",
+      "pattern": "Personal Experience + Lessons",
+      "why_it_works": "Authority through experience, promise of insight",
+      "platform": "medium"
+    },
+    {
+      "hook": "[Number] [things] that [surprising result]",
+      "pattern": "Numbered Insight List",
+      "why_it_works": "Structured, scannable, promises multiple insights",
+      "platform": "medium"
+    },
+    {
+      "hook": "The [thing] nobody talks about",
+      "pattern": "Hidden Truth Reveal",
+      "why_it_works": "Positions as insider knowledge, contrarian angle",
+      "platform": "medium"
+    },
+    {
+      "hook": "I spent 6 months testing every AI agent on the market. Here's what I learned.",
+      "pattern": "Long Test + Lessons Learned",
+      "why_it_works": "Authority through sustained effort (6 months), comprehensive scope (every agent), lessons promise",
+      "emotion": "curiosity, credibility",
+      "curiosity_gap": "high",
+      "platform": "medium",
+      "niche": "ai-agents",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": "Why your AI outputs suck (and it's not the model's fault)",
+      "pattern": "Problem Reframe",
+      "why_it_works": "Blunt assessment, reframes blame to user (not AI), promises structural fix",
+      "emotion": "frustration, curiosity",
+      "curiosity_gap": "high",
+      "platform": "medium",
+      "niche": "ai-agents",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": "The difference between people making money with AI and everyone else",
+      "pattern": "Action Gap Analysis",
+      "why_it_works": "Divides audience into doers vs talkers, promises to reveal the gap",
+      "emotion": "status, curiosity",
+      "curiosity_gap": "high",
+      "platform": "medium",
+      "niche": "ai-agents",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": "I replaced my $8K/mo team with AI. Here's the honest breakdown.",
+      "pattern": "Cost Replacement + Honesty",
+      "why_it_works": "Dramatic cost claim, honesty framing (not hype), breakdown promise",
+      "emotion": "envy, trust",
+      "curiosity_gap": "very high",
+      "platform": "medium",
+      "niche": "ai-agents",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": "The skills that made you money in 2024 won't matter in 2027",
+      "pattern": "Skill Obsolescence Warning",
+      "why_it_works": "Specific years create credibility, urgent but not alarmist, forward-looking",
+      "emotion": "fear, curiosity",
+      "curiosity_gap": "high",
+      "platform": "medium",
+      "niche": "ai-agents",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": "I analyzed 50 glamping sites. The profitable ones all made the same design choice.",
+      "pattern": "Research + Single Insight",
+      "why_it_works": "Large sample (50 sites), single differentiator promise, research authority, B2B audience trusts data",
+      "emotion": "curiosity, credibility",
+      "curiosity_gap": "very high",
+      "platform": "medium",
+      "niche": "enchantents-glamping",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": "The glamping ROI nobody shares: $80K investment, $240K year-one revenue, 4.2-month payback",
+      "pattern": "Revenue Stack + Payback Period",
+      "why_it_works": "Specific numbers stacked, short payback period creates urgency, 'nobody shares' = forbidden knowledge",
+      "emotion": "envy, curiosity",
+      "curiosity_gap": "very high",
+      "platform": "medium",
+      "niche": "enchantents-glamping",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": "Why most glamping businesses fail in year 1 (and the 3 mistakes that guarantee it)",
+      "pattern": "Failure Prevention + Numbered Mistakes",
+      "why_it_works": "Fear of failure hooks attention, specific mistakes (3), B2B operators invest heavily and fear collapse",
+      "emotion": "fear, curiosity",
+      "curiosity_gap": "very high",
+      "platform": "medium",
+      "niche": "enchantents-glamping",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": "Hotel rooms vs glamping tents: A $600K vs $180K comparison with surprising results",
+      "pattern": "A/B Cost Comparison",
+      "why_it_works": "Dramatic cost difference, same industry comparison, 'surprising results' promises contrarian data",
+      "emotion": "surprise, curiosity",
+      "curiosity_gap": "very high",
+      "platform": "medium",
+      "niche": "enchantents-glamping",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": "The hidden costs of glamping that manufacturers won't tell you about",
+      "pattern": "Hidden Cost Transparency",
+      "why_it_works": "Forbidden knowledge framing, buyer trust signal, industry opacity critique, practical value",
+      "emotion": "trust, curiosity",
+      "curiosity_gap": "very high",
+      "platform": "medium",
+      "niche": "enchantents-glamping",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": "How glamping operators achieve 80%+ year-round occupancy while hotels struggle at 30%",
+      "pattern": "Occupancy Contrast Analysis",
+      "why_it_works": "Specific occupancy rates, universal hospitality problem, analytical depth fits Medium's long-form style",
+      "emotion": "frustration, opportunity",
+      "curiosity_gap": "very high",
+      "platform": "medium",
+      "niche": "enchantents-glamping",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": "What 200+ glamping tent installations taught me about the hospitality industry",
+      "pattern": "Authority + Industry Lessons",
+      "why_it_works": "Massive authority (200+), industry insight promise, long-form depth, thought leadership positioning",
+      "emotion": "curiosity, credibility",
+      "curiosity_gap": "very high",
+      "platform": "medium",
+      "niche": "enchantents-glamping",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": "The resorts charging $500/night for glamping all understand something you don't about tent design",
+      "pattern": "Elite Insight + Knowledge Gap",
+      "why_it_works": "Premium pricing ($500/night), direct challenge ('you don't'), design focus, status aspiration",
+      "emotion": "status, curiosity",
+      "curiosity_gap": "very high",
+      "platform": "medium",
+      "niche": "enchantents-glamping",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": "Empty land to $150K/year: The glamping business model that's replacing hotel expansion",
+      "pattern": "Transformation + Industry Shift",
+      "why_it_works": "Before/after with specific revenue, industry trend positioning, replacement narrative creates urgency",
+      "emotion": "opportunity, curiosity",
+      "curiosity_gap": "very high",
+      "platform": "medium",
+      "niche": "enchantents-glamping",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": "Tax benefits of glamping investments that your accountant probably doesn't know about",
+      "pattern": "Hidden Tax Benefits",
+      "why_it_works": "Financial angle appeals to investors, 'accountant doesn't know' = insider knowledge, practical value",
+      "emotion": "curiosity, opportunity",
+      "curiosity_gap": "very high",
+      "platform": "medium",
+      "niche": "enchantents-glamping",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    }
+  ]
+}

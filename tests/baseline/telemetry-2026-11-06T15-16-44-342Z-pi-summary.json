@@ -1,0 +1,21 @@
+{
+  "runId": "2026-11-06T15-16-44-342Z-pi",
+  "finishedAt": "2026-11-06T15:16:48.371Z",
+  "telemetryFile": "/Users/clawdbot/clawd/huckleberry/tests/baseline/telemetry-2026-11-06T15-16-44-342Z-pi.jsonl",
+  "tasks": 1,
+  "ok": 1,
+  "failed": 0,
+  "tokensIn": 0,
+  "tokensOut": 0,
+  "costUsd": 0,
+  "byAdapter": {
+    "pi": {
+      "tasks": 1,
+      "ok": 1,
+      "failed": 0,
+      "tokensIn": 0,
+      "tokensOut": 0,
+      "costUsd": 0
+    }
+  }
+}

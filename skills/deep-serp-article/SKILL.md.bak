@@ -1,0 +1,530 @@
+---
+name: deep-serp-article
+description: |
+  Deep-research article writing methodology for any brand in businesses/.
+  Combines NotebookLM source population, NLM-driven gap analysis, brand context
+  loading, and NLM article generation with slippery slope copywriting + varied
+  rhythm. Produces authoritative pillar articles that outrank competitors.
+  Use when: writing a high-quality SEO pillar article, need SERP beating
+  research, or want the Madam Groovy limerence-style deep research workflow.
+depends-on:
+  - notebooklm
+  - nlm-cli
+---
+
+# Deep SERP Article Writer
+
+Writes authoritative pillar articles that outrank competitors by loading 50+ NLM sources, running competitive gap analysis through NLM, then generating an article with the brand's voice, audience awareness, and copywriting principles baked in.
+
+**Origin:** Extracted from the Madam Groovy limerence pillar article session (thread 1528933448369311745, July 2026). That session produced a 191-line pillar article ranking for "limerence" (301K/mo searches, competition index 2).
+
+**Scope:** Works for any brand under `businesses/` — madamgroovy, natureshares, harper, aiwithjai, maps-landing-service, etc.
+
+---
+
+## The Problem This Solves
+
+Most SEO articles are thin rehashes of Wikipedia. They fail to:
+1. Populate enough sources (60+) for genuine depth
+2. Identify content gaps NLM can surface from curated sources
+3. Align to ICP awareness level and brand voice
+4. Use copywriting principles that keep readers engaged (slippery slope)
+5. Vary sentence and paragraph rhythm to avoid AI cadence
+
+This skill produces articles that do all five — for any brand.
+
+---
+
+## Prerequisites
+
+Before starting, gather:
+- **Target keyword** (validated with search volume + competition — use `google-trends` or `google-ads generate-keywords` if needed)
+- **Business name** (directory name under `businesses/`)
+
+The skill handles everything else: NLM notebook creation, source population, brand context loading.
+
+---
+
+## Phase 0: NLM Source Population
+
+**Goal:** Build a NotebookLM notebook with ~50+ high-quality sources on the pillar keyword.
+
+### Step 0.1: Create or Locate the Notebook
+
+```bash
+# Check if a notebook for this pillar already exists
+notebooklm list --json | python3 -c "
+import json, sys
+data = json.load(sys.stdin)
+keyword = 'PILLAR_KEYWORD'
+for nb in data:
+    if keyword.lower() in nb.get('title', '').lower():
+        print(nb['id'])
+"
+
+# If no match, create one
+notebooklm create "Pillar: [PILLAR_KEYWORD]" --json
+# Save the notebook ID — you'll need it in every subsequent command
+```
+
+### Step 0.2: Add 20 YouTube Videos (Fixed Floor — Not Optional)
+
+The YouTube algorithm surfaces the most popular and relevant videos for your keyword. This is the initial quality filter — trust it.
+
+```bash
+# Fetch top 20 YouTube video IDs
+yt-dlp "ytsearch20:[PILLAR_KEYWORD]" --get-id --flat-playlist --skip-download > /tmp/yt-ids.txt
+
+# Count results — if under 20, log a warning and proceed with what you have
+count=$(wc -l < /tmp/yt-ids.txt)
+echo "Found $count YouTube videos"
+
+# Add each as an NLM source
+while IFS= read -r id; do
+  [ -z "$id" ] && continue
+  notebooklm source add "https://youtube.com/watch?v=$id" --json
+  echo "Added: $id"
+done < /tmp/yt-ids.txt
+
+# Wait for all sources to finish processing
+notebooklm source list --json | python3 -c "
+import json, sys
+data = json.load(sys.stdin)
+ready = [s for s in data if s.get('status') == 'READY']
+print(f'{len(ready)}/{len(data)} sources ready')
+"
+```
+
+### Step 0.3: Deep Web Research (NLM Discovers 20-40 More)
+
+NLM's deep research mode auto-discovers web sources — articles, PDFs, academic papers.
+
+```bash
+notebooklm source add-research "[PILLAR_KEYWORD]" --mode deep --no-wait
+```
+
+This runs in the background (15-30 minutes). While it runs, proceed to Phase 1 — they're independent. Come back to check status:
+
+```bash
+notebooklm research status
+notebooklm research wait --import-all
+```
+
+After import completes, verify total sources:
+
+```bash
+notebooklm source list --json | python3 -c "
+import json, sys
+data = json.load(sys.stdin)
+ready = [s for s in data if s.get('status') == 'READY']
+print(f'{len(ready)} sources ready')
+"
+```
+
+### Step 0.4: NLM Self-Curation
+
+Let NLM decide which sources are relevant — don't judge them yourself.
+
+```bash
+notebooklm ask "Review all sources in this notebook for
+'[PILLAR_KEYWORD]'. List any that are off-topic, redundant, or
+low-quality. Output titles only, one per line, with no additional text." > /tmp/prune-list.txt 2>&1
+
+# Delete flagged sources
+while IFS= read -r title; do
+  [ -z "$title" ] && continue
+  notebooklm source delete-by-title "$title" --yes 2>/dev/null && echo "Deleted: $title"
+done < /tmp/prune-list.txt
+
+# Final source count
+notebooklm source list --json | python3 -c "
+import json, sys
+data = json.load(sys.stdin)
+ready = [s for s in data if s.get('status') == 'READY']
+print(f'Final sources: {len(ready)}')
+"
+```
+
+**Spoke reuse note:** This one notebook serves the pillar page AND all its spoke articles. Do not repopulate sources for each spoke. When writing spoke articles later, re-use the same notebook. Add new sources only if the spoke covers a subtopic not well-represented in the current source set.
+
+### Troubleshooting: Phase 0
+
+**Problem:** yt-dlp returns 0 results
+**Solution:** The keyword may be too niche for YouTube content. Skip Step 0.2 and rely on deep research only. Note the gap to the user.
+
+**Problem:** Deep research takes >30 minutes
+**Solution:** Use `--no-wait` and run it as a background task while you proceed to Phase 1. Poll status with `notebooklm research status`.
+
+**Problem:** NLM flags no sources for deletion
+**Solution:** All sources are relevant. Accept it — no curation needed.
+
+---
+
+## Phase 1: NLM Gap Analysis
+
+**Goal:** Let NLM analyze all sources and tell you what's needed to rank higher.
+
+All queries go against the notebook created in Phase 0.
+
+### Query 1.1: What Topics Are Covered
+
+```bash
+cat > /tmp/q1-topics.txt << 'PROMPT_EOF'
+What are the main topics, themes, and content types covered
+across all sources in this notebook? Provide a concise overview.
+PROMPT_EOF
+
+notebooklm ask --prompt-file /tmp/q1-topics.txt --json > /tmp/a1-topics.json
+```
+
+### Query 1.2: How to Rank Higher (Competitive Gap Analysis)
+
+This is the key query. Frame it as competitive, not informational.
+
+```bash
+cat > /tmp/q2-rank-higher.txt << 'PROMPT_EOF'
+Based on all sources in this notebook, how could a new pillar
+article on [PILLAR_KEYWORD] rank higher than what currently
+exists? Consider:
+1. Missing perspectives or underserved subtopics
+2. Questions users ask that aren't being answered by current content
+3. Angles that competitors cover poorly or not at all
+4. Structure or format improvements that would win
+5. What specific depth, authority, or unique angle would give
+   a new article a competitive edge
+PROMPT_EOF
+
+notebooklm ask --prompt-file /tmp/q2-rank-higher.txt --json > /tmp/a2-gaps.json
+```
+
+### Query 1.3: Optimal Structure for Outranking
+
+```bash
+cat > /tmp/q3-structure.txt << 'PROMPT_EOF'
+What would be the optimal structure, length, and key sections
+for a pillar page on [PILLAR_KEYWORD] that would outrank current
+top results? Be specific about sections, order, and what each
+section must cover.
+PROMPT_EOF
+
+notebooklm ask --prompt-file /tmp/q3-structure.txt --json > /tmp/a3-structure.json
+```
+
+### Query 1.4: Semantic Related Keywords
+
+Let NLM propose the semantic keywords to weave into H2s.
+
+```bash
+cat > /tmp/q4-semantic.txt << 'PROMPT_EOF'
+What semantic related keywords should a new pillar article on
+[PILLAR_KEYWORD] target beyond the primary keyword? List 5-10
+semantic variants that would help the article rank for related
+search terms.
+PROMPT_EOF
+
+notebooklm ask --prompt-file /tmp/q4-semantic.txt --json > /tmp/a4-semantic.json
+```
+
+### Query 1.5: Spoke Article Topics
+
+```bash
+cat > /tmp/q5-spokes.txt << 'PROMPT_EOF'
+Based on the content gaps identified, what specific spoke article
+topics would complement a pillar page on [PILLAR_KEYWORD]?
+Each spoke should target a specific subtopic or variant keyword.
+PROMPT_EOF
+
+notebooklm ask --prompt-file /tmp/q5-spokes.txt --json > /tmp/a5-spokes.json
+```
+
+### What to extract from Phase 1 responses
+
+| File | What to extract |
+|---|---|
+| `a2-gaps.json` | Gap list — missing perspectives, underserved angles |
+| `a3-structure.json` | Recommended sections and order (will go into the writing prompt as `**STRUCTURE:**`) |
+| `a4-semantic.json` | Semantic keyword list (will go into the writing prompt as `**SEMANTIC KEYWORDS:**`) |
+| `a5-spokes.json` | Spoke article topics (saved for later) |
+
+---
+
+## Phase 2: Brand Context Loading (Brand-Agnostic)
+
+**Goal:** Load all brand context to inject into the NLM writing prompt.
+
+### Step 2.1: Load the Standard Business Context
+
+```bash
+# The MCP tool normalizes evergreen.md + brand-assets for any business
+load-business-context [BUSINESS_NAME]
+```
+
+This loads `evergreen.md` and any brand-assets files. Every brand under `businesses/` has at minimum `evergreen.md`.
+
+### Step 2.2: Discover and Load Specialized Brand Files
+
+Brands have different layouts. Search for these patterns:
+
+```bash
+# Find voice file (SOUL.md or voice-guide.md)
+find "/Users/clawdbot/clawd/businesses/[BUSINESS_NAME]" \
+  -maxdepth 4 -name "SOUL.md" -o -name "voice-guide.md" 2>/dev/null | head -3
+
+# Find ICP file (icp-profiles.md, audience.md, or reddit-pain-phrases.md)
+find "/Users/clawdbot/clawd/businesses/[BUSINESS_NAME]" \
+  -maxdepth 4 \( -name "icp-profiles.md" -o -name "audience.md" \
+  -o -name "reddit-pain-phrases.md" \) 2>/dev/null | head -5
+
+# Find keyword plan (optional — supplements NLM's semantic suggestions)
+find "/Users/clawdbot/clawd/businesses/[BUSINESS_NAME]" \
+  -maxdepth 4 \( -name "keyword-plan.md" -o -name "topic-clusters.json" \) 2>/dev/null | head -3
+```
+
+Also check `workspace/[BUSINESS_NAME]/` for additional brand files:
+```bash
+find "/Users/clawdbot/clawd/workspace/[BUSINESS_NAME]" \
+  -maxdepth 3 \( -name "SOUL.md" -o -name "reddit-pain-phrases.md" \
+  -o -name "CONTENT.md" -o -name "landing-page.md" \) 2>/dev/null | head -5
+```
+
+### Step 2.3: Extract Key Information
+
+From all loaded files, extract:
+- **Brand voice descriptors** — e.g., "wise, warm, radically clear" (SOUL.md or voice-guide.md)
+- **Brand phrases / forbidden words** — what to say, what never to say
+- **ICP definition** — who the reader is (from icp-profiles.md or evergree.md)
+- **Awareness level** — problem-aware vs. solution-aware (infer from ICP description)
+- **Storytelling form** — narrative-driven, evidence-based, etc. (from CONTENT.md or evergreen.md)
+- **Pain phrases** — ICP's exact language for pain validation (from reddit-pain-phrases.md or evergreen.md)
+- **CTA path** — the conversion path (article → landing page → service)
+- **Content rules** — DO/DON'T lists from evergreen.md
+
+If a file doesn't exist for a given brand (e.g., maps-landing-service has no icp-profiles.md), use whatever's available in evergreen.md alone and note the gap.
+
+### Fallback for Minimal Brands
+
+Some brands (like maps-landing-service) only have `evergreen.md`. That's fine — extract what you can:
+
+```bash
+# Read evergre.md directly
+cat /Users/clawdbot/clawd/businesses/[BUSINESS_NAME]/evergreen.md
+```
+
+Then infer: ICP from the business description, brand voice from tone, awareness level from who they serve.
+
+---
+
+## Phase 3: Article Writing via NLM
+
+**Goal:** Generate the pillar article using a single comprehensive NLM prompt.
+
+### Step 3.1: Assemble the Article Prompt
+
+Combine everything from Phases 0-2 into one prompt file:
+
+```bash
+cat > /tmp/article-prompt.txt << 'PROMPT_EOF'
+Write a comprehensive, authoritative yet accessible pillar page
+article on [PILLAR_KEYWORD] for [BUSINESS_NAME].
+
+**TARGET KEYWORD:** [PILLAR_KEYWORD] (verified volume + competition)
+**SEMANTIC KEYWORDS:** [paste from Phase 1.4 — the 5-10 semantic variants]
+**SEO INSTRUCTION:** Naturally weave semantic related keywords into
+H2 section headers. The article should rank for the primary keyword AND
+its semantic variants.
+
+**AUDIENCE:** [paste ICP from Phase 2 — who is reading this]
+**AWARENESS LEVEL:** [problem-aware / solution-aware — from Phase 2]
+**STORYTELLING FORM:** [from Phase 2 — e.g., narrative-driven with personal elements]
+
+**COPYWRITING PRINCIPLE: Slippery Slope**
+Each sentence must create an irresistible pull to read the next.
+Open loops in one sentence, close them in the next. Never let the
+reader reach a natural stopping point mid-paragraph.
+Ways to do this:
+- Open loops: "What happened next surprised everyone."
+- Imply value ahead: "This is where most people get it wrong."
+- Plant questions: describe a phenomenon, then leave the
+  explanation for the next paragraph
+- End paragraphs on tension, never resolution
+- End sections on questions, never answers
+The goal: a reader who sits down for "5 minutes" and finishes
+the whole article wondering where the time went.
+
+**RHYTHM AND CADENCE (CRITICAL):**
+Vary sentence length deliberately. Short punchy sentences. Then
+longer ones that take their time getting where they're going. Mix
+it up. Real writing alternates short and long — AI writing tends
+toward an even, mid-length cadence. Break that pattern.
+Also vary paragraph length: some paragraphs are one searing
+sentence. Some are four sentences. Some are a single observation
+that earns its own space. Never let paragraphs fall into uniform
+multi-sentence blocks.
+
+**BRAND VOICE:** [paste from Phase 2 — e.g., "wise, warm, radically clear"]
+**CONTENT RULES:**
+- DO [paste approved terms / approaches from Phase 2]
+- DON'T [paste forbidden terms / approaches from Phase 2]
+
+**STRUCTURE:** [paste NLM's recommended structure from Phase 1.3 —
+NLM determines the optimal structure based on what would outrank
+current top results. Do NOT use a fixed template.]
+
+**CITATIONS:** Use bracketed citations [1, 2] referencing sources
+in the notebook.
+**INTERNAL LINKS:** Note opportunities to link to related spoke content.
+
+**CTA:** [paste conversion path from Phase 2 — soft call-to-action
+aligned with brand positioning]
+PROMPT_EOF
+```
+
+### Step 3.2: Generate the Article
+
+```bash
+notebooklm ask --prompt-file /tmp/article-prompt.txt \
+  --save-as-note --note-title "Pillar: [PILLAR_KEYWORD]" --json > /tmp/article-result.json
+```
+
+### Step 3.3: Refine if Needed
+
+Review the generated article. If sections need strengthening:
+
+```bash
+# Example refinement queries
+notebooklm ask "Strengthen section 3 by adding a practical exercise
+the reader can do today." --save-as-note --note-title "Pillar: [PILLAR_KEYWORD] - Section 3"
+```
+
+Refinements save as separate notes with descriptive titles so you can pick the best version later.
+
+### Step 3.4: Retrieve the Final Note
+
+```bash
+# List notes to find the one you want
+notebooklm note list --json | python3 -c "
+import json, sys
+data = json.load(sys.stdin)
+for n in data:
+    if 'Pillar: [PILLAR_KEYWORD]' in n.get('title', ''):
+        print(f'{n[\"id\"]}  {n[\"title\"]}')
+"
+
+# Get the best version as markdown
+notebooklm note get [NOTE_ID] --format markdown > /tmp/final-article.md
+```
+
+---
+
+## Phase 4: Save and Format
+
+**Goal:** Save the article in the correct format for the brand's content system.
+
+### Step 4.1: Determine Content Structure
+
+Different brands use different systems. Check what exists:
+
+```bash
+# Jekyll/Hugo-style draft dir
+ls businesses/[BUSINESS_NAME]/content/_drafts/ 2>/dev/null && echo "Jekyll-style"
+ls businesses/[BUSINESS_NAME]/content/03-production/blog/ 2>/dev/null && echo "Structured blog"
+
+# Read an existing draft to match format
+head -10 businesses/[BUSINESS_NAME]/content/_drafts/*/index.md 2>/dev/null | head -20
+head -10 businesses/[BUSINESS_NAME]/content/03-production/blog/*/ARTICLE-DRAFT.md 2>/dev/null | head -20
+```
+
+### Step 4.2: Create the Article File
+
+```bash
+# Create a slug from the pillar keyword
+SLUG=$(echo "[PILLAR_KEYWORD]" | sed 's/ /-/g' | tr '[:upper:]' '[:lower:]')
+
+# Create directory matching existing pattern
+mkdir -p "businesses/[BUSINESS_NAME]/content/03-production/blog/$SLUG"
+
+# Write the article (adjust format based on what you found in Step 4.1)
+cp /tmp/final-article.md "businesses/[BUSINESS_NAME]/content/03-production/blog/$SLUG/ARTICLE-DRAFT.md"
+
+echo "Article saved to: businesses/[BUSINESS_NAME]/content/03-production/blog/$SLUG/"
+```
+
+### Step 4.3: Final Polish
+
+- Fix any typos in CTAs (ensure brand name is correct)
+- Remove any duplicate lines or sections
+- Verify internal link placeholders point to real spoke slugs
+- Read the first 10 and last 10 lines to confirm clean start/end
+
+---
+
+## Phase 5: Quality Gate
+
+Before showing the article to the user, verify:
+
+1. **Keyword targeting** — primary keyword appears in title, first paragraph, and H2s
+2. **Semantic keywords** — variants naturally appear in H2s
+3. **Content gap coverage** — Phase 1.2 gaps are addressed
+4. **ICP alignment** — language matches pain phrases from Phase 2
+5. **Brand voice** — consistent with voice descriptors from Phase 2
+6. **Slippery slope** — paragraphs end with hooks leading to the next
+7. **Rhythm** — sentence and paragraph length varies (no uniform mid-length cadence)
+8. **Citations** — bracketed references to sources
+9. **CTA** — soft call-to-action aligned with conversion path
+10. **Length** — pillar articles 1500-3000 words; spoke articles 800-1500
+
+---
+
+## Example: Madam Groovy Limerence Article
+
+**Thread:** https://discord.com/channels/1109630805409529916/1528933448369311745
+
+**What the session did (following this skill exactly):**
+
+| Phase | What happened | Result |
+|---|---|---|
+| 0 | Created NLM notebook, added 20 YouTube videos, ran deep research (40+ more), NLM curated | ~60 sources on limerence |
+| 1 | Five NLM queries: topics, gaps, structure, semantic keywords, spokes | Gaps identified, 7-section structure recommended, 5 semantic variants surfaced |
+| 2 | Loaded evergreen.md + SOUL.md + icp-profiles.md + reddit-pain-phrases.md | ICP: women 25-45 navigating heartbreak. Voice: wise, warm, ruthlessly clear |
+| 3 | Comprehensive NLM prompt with all inputs + slippery slope + varied rhythm | 191-line pillar article with bracketed citations |
+| 4 | Formatted and saved to `content/03-production/blog/taming-the-limerent-beast/ARTICLE-DRAFT.md` | Saved and verified |
+| 5 | Verified keyword targeting, gaps covered, brand voice consistent | Ready for user review |
+
+**Result:** Article titled "Taming the Limerent Beast: A Guide to Obsessive Love" targeting "limerence" (301K/mo, competition index 2).
+
+---
+
+## Troubleshooting
+
+**Problem:** Brand has no brand-assets directory (e.g., maps-landing-service)
+**Solution:** Fall back to `evergreen.md` only. Extract brand voice from the document's tone and ICP from the business description.
+
+**Problem:** yt-dlp returns 0 results
+**Solution:** Keyword may be too niche. Skip YouTube step and rely on deep research only.
+
+**Problem:** NLM deep research takes >30 minutes
+**Solution:** Use `--no-wait` and run in background. Proceed to Phase 2 while it processes.
+
+**Problem:** NLM flags no sources for deletion
+**Solution:** All sources are relevant. Accept it — no curation needed.
+
+**Problem:** Article drifts from brand voice
+**Solution:** Re-read the voice file (SOUL.md or voice-guide.md) and include specific voice phrases as examples in the Phase 3 prompt.
+
+**Problem:** Generated article has uniform paragraph lengths
+**Solution:** The NLM prompt's Rhythm section may have been omitted or truncated. Re-run Phase 3 with the full RHYTHM AND CADENCE block.
+
+**Problem:** NLM query returns generic structure recommendations
+**Solution:** Refine the Phase 1.3 query to ask: "Be specific. Give exact section headings, not generic advice."
+
+---
+
+## Related Skills
+
+- `notebooklm` — NLM source operations and querying (teng-lin/notebooklm-py)
+- `nlm-cli` — NLM CLI (jacob-bd fork, for batch/cross-notebook ops)
+- `google-trends` — Keyword research and SERP analysis
+- `google-ads` — Keyword volume + competition validation
+- `humanizer` — Post-generation rhythm and AI-tell removal
+- `article-generator` — Router skill that can delegate to this one
+- `seo-content` — Alternative path for pure SEO articles (less research depth)

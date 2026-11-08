@@ -1,0 +1,80 @@
+{
+  "runId": "2026-11-05T02-53-37-951Z-opencode",
+  "adapterId": "opencode",
+  "adapterStatus": {
+    "ready": true,
+    "detail": "opencode 1.19.0"
+  },
+  "persistedDefault": "opencode",
+  "manifestVersion": "1.0.0",
+  "results": [
+    {
+      "id": "agc-01-booking-inquiry",
+      "name": "Booking inquiry handling",
+      "status": "ok",
+      "pass": true,
+      "failures": [],
+      "costUsd": 0,
+      "usage": {
+        "input": 0,
+        "output": 0
+      },
+      "durationMs": 171973,
+      "outputLen": 2164
+    },
+    {
+      "id": "agc-02-quote-draft",
+      "name": "Quote draft",
+      "status": "error",
+      "pass": false,
+      "failures": [
+        "adapter status: error — timeout"
+      ],
+      "costUsd": 0,
+      "usage": {
+        "input": 0,
+        "output": 0
+      },
+      "durationMs": 899967,
+      "outputLen": 0
+    },
+    {
+      "id": "agc-03-invoice-expense-gst",
+      "name": "Invoice + expense logging with GST/CAD rules",
+      "status": "ok",
+      "pass": false,
+      "failures": [
+        "missing required string: \"2467.50\"",
+        "checkFn gstMathExact: GST math wrong: expect $117.50 GST and $2,467.50 total"
+      ],
+      "costUsd": 0,
+      "usage": {
+        "input": 0,
+        "output": 0
+      },
+      "durationMs": 720038,
+      "outputLen": 1114
+    }
+  ],
+  "summary": {
+    "runId": "2026-11-05T02-53-37-951Z-opencode",
+    "finishedAt": "2026-11-05T03:23:29.950Z",
+    "telemetryFile": "/Users/clawdbot/clawd/huckleberry/tests/baseline/telemetry-2026-11-05T02-53-37-951Z-opencode.jsonl",
+    "tasks": 3,
+    "ok": 2,
+    "failed": 1,
+    "tokensIn": 0,
+    "tokensOut": 0,
+    "costUsd": 0,
+    "byAdapter": {
+      "opencode": {
+        "tasks": 3,
+        "ok": 2,
+        "failed": 1,
+        "tokensIn": 0,
+        "tokensOut": 0,
+        "costUsd": 0
+      }
+    }
+  }
+}

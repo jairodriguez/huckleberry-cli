@@ -1,0 +1,52 @@
+{
+  "runId": "2026-11-06T15-15-57-073Z-deepseek",
+  "adapterId": "deepseek",
+  "adapterStatus": {
+    "ready": true,
+    "detail": "openrouter · 417 models · deepseek/deepseek-v4.1-flash"
+  },
+  "persistedDefault": null,
+  "manifestVersion": "1.0.0",
+  "results": [
+    {
+      "id": "agc-09-daily-summary",
+      "name": "Daily ops summary",
+      "status": "ok",
+      "pass": true,
+      "failures": [],
+      "costUsd": 0.002198,
+      "usage": {
+        "input": 250,
+        "output": 3854,
+        "cacheHit": 0,
+        "cacheMiss": 250
+      },
+      "durationMs": 15647,
+      "outputLen": 2020,
+      "output": "Daily Operations Summary — Lionel  \nDate: [Date] | Instance: Hickory\n\n1. New inquiry — Wedding (Aug, 120 pax)  \n   - New lead. High revenue potential. Needs qualification, date/venue availability check, and quote. Do not assume venue availability.\n\n2. New inquiry — Quinceañera (Sep, 90 pax)  \n   - New lead. High revenue potential. Needs qualification, date/venue availability check, and quote. Do not assume venue availability.\n\n3. Quote — Corporate lunch (45 pax)  \n   - Quote sent, pending approval. Blocker: approval required before next step. If internal approval is needed, obtain it; if client approval is pending, follow up. No commitment without approval.\n\n4. Completed event — Retirement (60 pax)  \n   - Event completed. Client asked about November booking. Warm repeat opportunity. Follow up, check availability, and prepare quote. Do not commit date/deposit/contract without owner approval. No complaint noted.\n\n5. Expense — Groceries ($412.60)  \n   - Submitted. Pending review/approval and reconciliation.\n\n6. Marketing — Instagram draft  \n   - Draft awaiting approval. Do not post until approved.\n\nBlockers / controls:  \n- Pending approvals: corporate lunch quote, Instagram draft, $412.60 expense.  \n- Venue availability not confirmed for wedding, quinceañera, or November booking.  \n- No deposits/contracts/refunds committed.  \n- Human takeover required for complaints and time-sensitive issues.\n\nNEXT ACTIONS (max 4, ordered by revenue impact):  \n1. Wedding inquiry (Aug, 120 pax): contact lead, qualify, verify venue/date availability, prepare quote; route for owner approval before any commitment.  \n2. Quinceañera inquiry (Sep, 90 pax): contact lead, qualify, verify venue/date availability, prepare quote; route for owner approval before any commitment.  \n3. Corporate lunch quote (45 pax): resolve pending approval and follow up with client to close near-term revenue.  \n4. Retirement client — November booking: follow up, check availability, prepare quote; owner approval before deposit/contract."
+    }
+  ],
+  "summary": {
+    "runId": "2026-11-06T15-15-57-073Z-deepseek",
+    "finishedAt": "2026-11-06T15:16:12.721Z",
+    "telemetryFile": "/Users/clawdbot/clawd/huckleberry/tests/baseline/telemetry-2026-11-06T15-15-57-073Z-deepseek.jsonl",
+    "tasks": 1,
+    "ok": 1,
+    "failed": 0,
+    "tokensIn": 250,
+    "tokensOut": 3854,
+    "costUsd": 0.002198,
+    "byAdapter": {
+      "deepseek": {
+        "tasks": 1,
+        "ok": 1,
+        "failed": 0,
+        "tokensIn": 250,
+        "tokensOut": 3854,
+        "costUsd": 0.002198
+      }
+    },
+    "checksPassed": 1,
+    "checksTotal": 1
+  }
+}

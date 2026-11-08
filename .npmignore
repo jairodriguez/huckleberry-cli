@@ -1,0 +1,17 @@
+# Exclude from npm package
+.git/
+.gitignore
+.gitmodules
+*.md
+!README.md
+*.txt
+!package.json
+*.log
+*.tmp
+node_modules/
+dist/
+build/
+*.tgz
+*.tar.gz
+.DS_Store
+Thumbs.db

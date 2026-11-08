@@ -1,0 +1,21 @@
+{
+  "runId": "2026-11-06T15-14-54-810Z-deepseek",
+  "finishedAt": "2026-11-06T15:15:12.102Z",
+  "telemetryFile": "/Users/clawdbot/clawd/huckleberry/tests/baseline/telemetry-2026-11-06T15-14-54-810Z-deepseek.jsonl",
+  "tasks": 1,
+  "ok": 1,
+  "failed": 0,
+  "tokensIn": 250,
+  "tokensOut": 2185,
+  "costUsd": 0.001252,
+  "byAdapter": {
+    "deepseek": {
+      "tasks": 1,
+      "ok": 1,
+      "failed": 0,
+      "tokensIn": 250,
+      "tokensOut": 2185,
+      "costUsd": 0.001252
+    }
+  }
+}

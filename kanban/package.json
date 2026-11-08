@@ -1,0 +1,9 @@
+{
+  "name": "huckleberry-kanban",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "dependencies": {
+    "better-sqlite3": "^13.0.3"
+  }
+}

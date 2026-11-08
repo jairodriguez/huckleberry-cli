@@ -1,0 +1,49 @@
+{
+  "runId": "2026-11-06T15-02-17-239Z-deepseek",
+  "adapterId": "deepseek",
+  "adapterStatus": {
+    "ready": true,
+    "detail": "openrouter · 417 models · deepseek/deepseek-v4.1-flash"
+  },
+  "persistedDefault": null,
+  "manifestVersion": "1.0.0",
+  "results": [
+    {
+      "id": "agc-02-quote-draft",
+      "name": "Quote draft",
+      "status": "ok",
+      "pass": true,
+      "failures": [],
+      "costUsd": 0.002334,
+      "usage": {
+        "input": 223,
+        "output": 4096,
+        "cacheHit": 0,
+        "cacheMiss": 223
+      },
+      "durationMs": 28590,
+      "outputLen": 14967
+    }
+  ],
+  "summary": {
+    "runId": "2026-11-06T15-02-17-239Z-deepseek",
+    "finishedAt": "2026-11-06T15:02:45.831Z",
+    "telemetryFile": "/Users/clawdbot/clawd/huckleberry/tests/baseline/telemetry-2026-11-06T15-02-17-239Z-deepseek.jsonl",
+    "tasks": 1,
+    "ok": 1,
+    "failed": 0,
+    "tokensIn": 223,
+    "tokensOut": 4096,
+    "costUsd": 0.002334,
+    "byAdapter": {
+      "deepseek": {
+        "tasks": 1,
+        "ok": 1,
+        "failed": 0,
+        "tokensIn": 223,
+        "tokensOut": 4096,
+        "costUsd": 0.002334
+      }
+    }
+  }
+}

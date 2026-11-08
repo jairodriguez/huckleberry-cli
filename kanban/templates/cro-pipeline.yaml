@@ -1,0 +1,296 @@
+name: CRO Pipeline
+description: >
+  Full conversion rate optimization pipeline from discovery to test plan.
+  Reads brand context from the evergreen system. If brand files are missing,
+  the discovery task asks the user targeted questions before proceeding.
+  Brand-agnostic — works for any site with any conversion goal.
+
+variables:
+  - name: tenant
+    required: true
+    description: Brand/project tenant name (maps to a kimaki project)
+  - name: target_url
+    required: true
+    description: Primary URL or flow entry point to optimize
+  - name: conversion_goal
+    required: false
+    description: What counts as a conversion (signup, purchase, demo request, etc.)
+  - name: flow_type
+    default: auto
+    description: >
+      Flow type to optimize. Options: page, signup-flow, onboarding,
+      checkout, upgrade, full-funnel, auto (detect automatically)
+  - name: current_rate
+    required: false
+    description: Current conversion rate if known (e.g. "2.3%")
+  - name: traffic_source
+    default: mixed
+    description: Primary traffic source (organic, paid, email, social, mixed)
+
+tasks:
+  - id: discovery
+    title: "CRO Discovery: {{target_url}}"
+    assignee: cro-strategist
+    skills: [page-cro, conversion-flow-cro]
+    priority: 3
+    body: |
+      ## CRO Discovery for {{tenant}}
+
+      Target URL: {{target_url}}
+      Conversion Goal: {{conversion_goal}}
+      Flow Type: {{flow_type}}
+      Current Rate: {{current_rate}}
+      Traffic Source: {{traffic_source}}
+
+      ## Step 1: Read Brand Context
+
+      Read these files from the tenant's brand directory BEFORE asking questions:
+      - `brand/audience.md` — Personas, pain points, motivation levels
+      - `brand/positioning.md` — Value props and differentiation
+      - `brand/voice-profile.md` — Brand voice for copy recommendations
+      - `brand/creative-kit.md` — Visual identity constraints
+      - `businesses/{tenant}/evergreen.md` — Business context, goals, revenue model
+
+      ## Step 2: Identify Gaps
+
+      After reading brand files, note which are missing or incomplete.
+      If critical files are missing, BLOCK the task and ask the user:
+      - No audience.md → "Who is your ideal customer? What's their biggest pain point?"
+      - No positioning.md → "What makes you different from competitors? What's your main value proposition?"
+      - No voice-profile.md → "How would you describe your brand tone? (casual, professional, provocative, etc.)"
+      - No conversion goal → "What specific action do you want visitors to take?"
+
+      ## Step 3: Map the Target
+
+      Visit {{target_url}} and map what exists:
+      - Page type (landing, homepage, pricing, signup, checkout)
+      - Current headline, CTA copy, form fields
+      - Trust signals present
+      - Friction points visible
+      - Mobile experience assessment
+
+      If flow_type is "auto", determine from the URL and page content whether this is:
+      - A single page optimization → page-cro
+      - A multi-step flow (signup/onboarding/checkout) → conversion-flow-cro
+      - A form-heavy page → form-cro
+
+      ## Output
+
+      Write a discovery report covering:
+      1. Brand context summary (what was found, what was missing)
+      2. Current state assessment of the target URL/flow
+      3. Recommended CRO focus areas ranked by estimated impact
+      4. Which sub-audits to run (page, flow, form, onboarding, paywall)
+
+  - id: page_audit
+    title: "Page CRO Audit: {{target_url}}"
+    assignee: cro-auditor
+    skills: [page-cro]
+    parents: [discovery]
+    priority: 2
+    body: |
+      ## Page CRO Audit
+
+      Target: {{target_url}}
+      Tenant: {{tenant}}
+      Conversion Goal: {{conversion_goal}}
+      Traffic Source: {{traffic_source}}
+
+      Use the discovery report from the parent task as context.
+      Read brand files (audience.md, positioning.md, voice-profile.md) for copy recommendations.
+
+      Audit the page across these dimensions (score each 1-10):
+      1. Value Proposition Clarity
+      2. Headline Effectiveness
+      3. CTA Placement, Copy, and Hierarchy
+      4. Visual Hierarchy and Scannability
+      5. Trust Signals and Social Proof
+      6. Objection Handling
+      7. Friction Points
+
+      For each dimension provide:
+      - Current state (what exists now)
+      - Issues found
+      - Specific fix recommendation
+      - 2-3 copy alternatives where applicable (matching brand voice)
+
+      Output: Scored audit with prioritized quick wins and test ideas.
+
+  - id: flow_audit
+    title: "Flow CRO Audit: {{target_url}}"
+    assignee: cro-auditor
+    skills: [conversion-flow-cro, signup-flow-cro, onboarding-cro]
+    parents: [discovery]
+    priority: 2
+    body: |
+      ## Multi-Step Flow CRO Audit
+
+      Target: {{target_url}}
+      Tenant: {{tenant}}
+      Flow Type: {{flow_type}}
+      Conversion Goal: {{conversion_goal}}
+
+      Use the discovery report from the parent task as context.
+      Read brand files for voice and positioning guidance.
+      Read `references/flow-benchmarks.md` from the conversion-flow-cro skill for benchmark data.
+
+      Map every step in the conversion flow:
+      - Step name, URL/route, fields required, CTA copy
+      - Friction score per step (1-5)
+      - Drop-off risk assessment
+
+      For each step:
+      - Identify the #1 friction point
+      - Recommend a specific copy or UX fix
+      - Suggest where to add progress indicators, social proof, or motivation boosters
+
+      Apply progressive disclosure, smart defaults, and single-field starts where possible.
+
+      Output: Flow map with per-step drop-off risk, redesign recommendations, and benchmark comparison.
+
+  - id: form_audit
+    title: "Form CRO Audit: {{target_url}}"
+    assignee: cro-auditor
+    skills: [form-cro, signup-flow-cro]
+    parents: [discovery]
+    priority: 2
+    body: |
+      ## Form CRO Audit
+
+      Target: {{target_url}}
+      Tenant: {{tenant}}
+      Conversion Goal: {{conversion_goal}}
+
+      Use the discovery report from the parent task as context.
+      Read brand files for voice guidance on label and placeholder copy.
+
+      Audit all forms on the target page/flow:
+      1. Field count vs. minimum required
+      2. Field order optimization
+      3. Label, placeholder, and microcopy quality
+      4. Error handling and validation UX
+      5. Mobile form experience
+      6. Social auth options
+      7. Trust elements near forms
+
+      For each form issue:
+      - Rate severity (high/medium/low)
+      - Provide specific fix
+      - Estimate impact on completion rate
+
+      Output: Form audit with field-by-field recommendations and redesigned form spec.
+
+  - id: redesign
+    title: "CRO Redesign Package: {{target_url}}"
+    assignee: cro-designer
+    skills: [copywriting]
+    parents: [page_audit, flow_audit, form_audit]
+    priority: 1
+    body: |
+      ## CRO Redesign Package
+
+      Target: {{target_url}}
+      Tenant: {{tenant}}
+
+      Synthesize findings from the three parent audits (page, flow, form).
+      Read brand files for voice and positioning — ALL copy must match brand voice.
+
+      Produce a complete redesign package:
+
+      ### 1. Quick Wins (implement today)
+      List changes that require no design/dev resources or minimal effort.
+      For each: what to change, what to change it to, expected impact.
+
+      ### 2. Copy Redesign
+      - New headline options (3 variants with rationale)
+      - New CTA copy (3 variants)
+      - Supporting copy for each step/screen
+      - Microcopy for forms, errors, and progress indicators
+
+      ### 3. UX Recommendations
+      - Field reduction plan (which fields to remove, defer, or make optional)
+      - Flow restructuring (step order, consolidation)
+      - Social proof placement map
+      - Trust signal additions
+
+      ### 4. Implementation Priority
+      Rank all changes by: impact × effort, grouped into:
+      - Week 1 (quick wins + high-impact low-effort)
+      - Week 2-3 (medium-effort improvements)
+      - Month 2 (larger structural changes)
+
+      Output: Complete redesign document ready for implementation.
+
+  - id: test_plan
+    title: "A/B Test Plan: {{target_url}}"
+    assignee: cro-strategist
+    skills: [ab-test-setup]
+    parents: [redesign]
+    priority: 1
+    body: |
+      ## A/B Test Plan
+
+      Target: {{target_url}}
+      Tenant: {{tenant}}
+      Current Rate: {{current_rate}}
+
+      Using the redesign package from the parent task, create a prioritized A/B test plan.
+
+      For each test:
+      - Hypothesis statement
+      - Control vs. variant description
+      - Primary and secondary metrics
+      - Estimated sample size needed
+      - Minimum test duration
+      - Expected impact range
+
+      Prioritize tests by:
+      1. Highest expected impact on conversion rate
+      2. Lowest implementation effort
+      3. Fastest time to statistical significance
+
+      Group tests into phases:
+      - Phase 1: Hero/headline/CTA tests (highest impact, fastest results)
+      - Phase 2: Form and flow changes
+      - Phase 3: Trust signals and social proof
+      - Phase 4: Structural/layout changes
+
+      Output: Test plan with phase grouping, sample sizes, and success criteria.
+
+  - id: handoff
+    title: "CRO Handoff: {{target_url}}"
+    assignee: cro-strategist
+    skills: [page-cro]
+    parents: [redesign, test_plan]
+    priority: 0
+    body: |
+      ## CRO Handoff Summary
+
+      Target: {{target_url}}
+      Tenant: {{tenant}}
+
+      Read the parent task results (redesign package + test plan).
+      Produce a single executive summary covering:
+
+      1. Current state assessment (from discovery)
+      2. Top 5 recommended changes ranked by impact
+      3. Implementation timeline (what to do this week, this month, next month)
+      4. A/B test roadmap summary
+      5. Expected overall conversion rate improvement range
+      6. Key risks and dependencies
+
+      BLOCK this task — present the summary to the user for approval before anyone implements.
+
+  # Tournament Mode (Quality Gate v2.0)
+  #
+  # For any task that produces high-impact short-form copy (headlines, subject lines,
+  # hooks, CTAs, social post first lines), run the copywriting tournament BEFORE
+  # standard quality-gate:
+  #
+  # 1. Generate 3-5 variants
+  # 2. Spawn 5 parallel judge subagents (skeptic, scanner, buyer, expert, outsider)
+  #    Each loads persona from: ~/.claude/skills/quality-gate/judge-personas/{name}.md
+  # 3. Aggregate scores, pick winner
+  # 4. Winner enters standard quality-gate (single reviewer, pass/fail)
+  #
+  # See: Skill quality-gate for full tournament prompt templates and integration patterns.

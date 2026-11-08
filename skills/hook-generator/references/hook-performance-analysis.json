@@ -1,0 +1,153 @@
+{
+  "hookCategories": [
+    {
+      "pattern": "Direct Value / Resource Sharing",
+      "description": "Immediately offers a tangible asset like a prompt, guide, or formula, establishing authority and providing instant utility.",
+      "effectiveness": 95,
+      "examples": [
+        "the prompt I've been using is:",
+        "the formula for pricing AI projects (save it):",
+        "manus for niches, claude for hooks = $15k/m passive info income",
+        "Founders: 2026 Landing Page Checklist:"
+      ],
+      "template": "Here's the [Resource Type] I use to [Achieve Specific Outcome]."
+    },
+    {
+      "pattern": "Benefit-Driven / Problem-Solution",
+      "description": "Leads with a clear benefit or a solution to a known problem, appealing directly to the audience's goals and pain points.",
+      "effectiveness": 90,
+      "examples": [
+        "My Claude Code now runs several parallel Gemini agents for research and coding thus saving a ton of tokens.",
+        "you can scrape any authenticated page with claude code in like 2 mins…",
+        "AI does 90% of our initial GTM strategy formulation all in just these 6 prompts."
+      ],
+      "template": "[Tool/Method] lets you [Achieve Desired Outcome] while avoiding [Common Pain Point]."
+    },
+    {
+      "pattern": "Intrigue / Secret Unveiled",
+      "description": "Creates curiosity by hinting at a hidden method, story, or non-obvious opportunity, compelling users to read more to find the answer.",
+      "effectiveness": 90,
+      "examples": [
+        "there’s an insane amount of MONEY hiding where most people don’t look.",
+        "found out my friend makes $20k/month BUYING macbooks",
+        "a guy who's sold $20M+ in info products told me something that changed how i see marketing forever",
+        "There's an AI coding approach that lets you run seriously long-running AI agents (hours, days) that ship code while you sleep. I've tried it, and I'm not going back."
+      ],
+      "template": "There's a [Adjective] method for [Task] that few people know about."
+    },
+    {
+      "pattern": "Contrarian / Provocative Statement",
+      "description": "Challenges a common belief or states a strong, unexpected opinion to grab attention and spark discussion.",
+      "effectiveness": 85,
+      "examples": [
+        "Being a generalist is a superpower, but it’s also a dopamine trap.",
+        "Money is a proxy for energy.",
+        "Stop using Apollo for all your leads",
+        "buying google ads on competitor brand names is obvious"
+      ],
+      "template": "You've been told [Common Belief] is true. It's not. The reality is [Your Contrarian Take]."
+    },
+    {
+      "pattern": "Urgency / FOMO",
+      "description": "Implies the reader is missing out on a significant opportunity or advantage, creating a fear of being left behind.",
+      "effectiveness": 80,
+      "examples": [
+        "If you're not using Google's AI studio \"build\" feature to prototype MVPs, you're sleeping on a super power.",
+        "I DON’T UNDERSTAND WHY PEOPLE AREN’T USING GOOGLE GEMINI FOR SIDE HUSTLES IN 2026."
+      ],
+      "template": "If you're still not using [Tool/Technique] for [Goal] in 2026, you're falling behind."
+    },
+    {
+      "pattern": "Educational / Question",
+      "description": "Engages the reader by asking a direct question that also teaches them something new or highlights a feature.",
+      "effectiveness": 75,
+      "examples": [
+        "Did you know you can animate your nanobanana infographics using Veo2 model in Google AI Studio? https://t.co/J74J0eBROf",
+        "Did you know you can use skills in Codex?"
+      ],
+      "template": "Did you know you can use [Tool] to [Achieve Surprising Outcome]?"
+    },
+    {
+      "pattern": "Personal Anecdote / Storytelling",
+      "description": "Starts with a personal story (often dramatic or relatable) to build a human connection and draw the reader in.",
+      "effectiveness": 75,
+      "examples": [
+        "Yesterday I cut my knee open with a machete while chasing goats through the thicket in a ravine.",
+        "i had $57,000 in debt",
+        "Your prospect opens your message and sees you sitting in their favorite café, in their city, holding a mug with their logo on it."
+      ],
+      "template": "[Timeframe], I experienced [Unexpected Event] that taught me [Key Lesson about Tech/Work]."
+    },
+    {
+      "pattern": "Data Revelation / Warning",
+      "description": "Uses a surprising or shocking statistic to create concern and establish credibility.",
+      "effectiveness": 70,
+      "examples": [
+        "✍️ over 80% of the vibe coded apps have critical security vulnerabilities"
+      ],
+      "template": "A recent study shows [Shocking Percentage]% of [Group] are affected by [Unexpected Problem]."
+    },
+    {
+      "pattern": "Slice of Life / Authenticity",
+      "description": "Shares a personal, often non-work-related moment to build authenticity and create a personal brand connection.",
+      "effectiveness": 65,
+      "examples": [
+        "Out on the ridge with the goats.",
+        "The bread is ready to go into the wood fired oven. https://t.co/IWWg3LZcUF"
+      ],
+      "template": "[Current authentic, non-work activity]."
+    }
+  ],
+  "topPerformingHooks": [
+    {
+      "hook": "There's an AI coding approach that lets you run seriously long-running AI agents (hours, days) that ship code while you sleep. I've tried it, and I'm not going back.",
+      "pattern": "Intrigue / Secret Unveiled",
+      "whyItWorks": "It promises a powerful, almost magical solution to a major pain point for developers (long-running tasks) and ends with a strong personal endorsement."
+    },
+    {
+      "hook": "a guy who's sold $20M+ in info products told me something that changed how i see marketing forever",
+      "pattern": "Intrigue / Secret Unveiled",
+      "whyItWorks": "It leverages authority ($20M+) and promises a transformative insight, creating immense curiosity about the secret."
+    },
+    {
+      "hook": "AI does 90% of our initial GTM strategy formulation all in just these 6 prompts.",
+      "pattern": "Benefit-Driven / Problem-Solution",
+      "whyItWorks": "This is a concrete and highly impressive claim of efficiency. It provides a specific number (90%, 6 prompts) which makes it more believable and impactful."
+    },
+    {
+      "hook": "Being a generalist is a superpower, but it’s also a dopamine trap.",
+      "pattern": "Contrarian / Provocative Statement",
+      "whyItWorks": "It resonates with a large segment of the tech audience, validates their identity ('superpower'), and introduces a thought-provoking downside ('dopamine trap')."
+    }
+  ],
+  "hookFormulas": [
+    {
+      "formula": "[Tool A] for [Niche Task] + [Tool B] for [Hook Type] = [Impressive Financial/Time-saving Result]",
+      "example": "manus for niches, claude for hooks = $15k/m passive info income"
+    },
+    {
+      "formula": "Stop [Commonly Accepted Practice]. Instead, [Your Superior Method] to achieve [Better Outcome].",
+      "example": "Stop using Apollo for all your leads. Instead, scrape competitor followers and hit them with a cold email that acknowledges a pain point your competitor doesn't solve well."
+    },
+    {
+      "formula": "I had [Specific, Relatable Problem]. Here's the exact [Process/Tool] I used to fix it.",
+      "example": "i had $57,000 in debt. Here is the exact combination of AI tools and outreach scripts I used to clear it in 6 months."
+    }
+  ],
+  "forAiwithjai": {
+    "bestPatterns": [
+      "Direct Value / Resource Sharing",
+      "Benefit-Driven / Problem-Solution",
+      "Intrigue / Secret Unveiled",
+      "Contrarian / Provocative Statement"
+    ],
+    "avoidPatterns": [
+      "Slice of Life / Authenticity"
+    ],
+    "customTemplates": [
+      "I stopped using [Common Tool/Technique] because of [Specific Problem]. Now, I use [New Tool/Technique] to achieve [Specific Benefit].",
+      "Here's a prompt that automates 90% of [Complex, Annoying Task] for you.",
+      "Most people in [Your Niche] believe [Common Myth]. The truth is [Your Contrarian Insight]."
+    ]
+  }
+}

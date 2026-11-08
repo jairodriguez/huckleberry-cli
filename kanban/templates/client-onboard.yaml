@@ -1,0 +1,107 @@
+name: Client Onboard (Entry Point)
+description: >
+  Thin entry-point wrapper. Takes a website URL or business idea and stamps the full
+  CMO Pipeline to build a complete web presence from zero.
+  This is the "one command" clients use to start: give it a URL or idea, it runs everything.
+  Stamps: cmo-pipeline (orchestrator) → which stamps blog-social-campaign per content asset.
+
+variables:
+  - name: website_url
+    required: false
+    description: Existing website URL to scrape for voice, visuals, and content structure
+  - name: business_idea
+    required: false
+    description: Business description if no website exists yet (e.g. "A solar charger brand for van lifers")
+  - name: product
+    required: true
+    description: Product or service name
+  - name: tenant
+    required: true
+    description: Brand/project tenant name (maps to a kimaki project)
+  - name: vertical
+    required: true
+    description: Industry vertical (e.g. "saas", "resorts", "e-commerce", "consumer goods")
+  - name: spoke_count
+    default: "10"
+    description: Target number of TOFU spoke pages
+  - name: cornerstone_count
+    default: "3"
+    description: Number of MOFU cornerstone articles
+  - name: platforms
+    default: twitter,linkedin,instagram,reddit
+    description: Comma-separated social platforms
+  - name: audience_hint
+    required: false
+    description: Quick audience description (e.g. "campers who overpay for gear")
+  - name: competitor_hint
+    required: false
+    description: Known competitors (comma-separated)
+  - name: launch_date
+    required: false
+    description: Target launch date (YYYY-MM-DD)
+
+tasks:
+  - id: validate_input
+    title: "Validate onboarding input: {{product}}"
+    assignee: researcher
+    priority: 5
+    body: |
+      Validate the onboarding input for "{{product}}".
+
+      Check that at least ONE of the following is provided:
+      - website_url: "{{website_url}}"
+      - business_idea: "{{business_idea}}"
+
+      If neither is provided, BLOCK the task and ask the user:
+      "I need either a website URL to analyze, or a description of your business idea to get started."
+
+      If website_url is provided:
+      - Verify the URL is reachable
+      - Flag whether the site uses WordPress (affects publishing approach)
+      - Note: voice and visual extraction will happen in cmo-pipeline intake phase
+
+      If business_idea is provided:
+      - Note that foundation will be built from scratch (no existing brand to extract from)
+      - Flag that audience_hint and competitor_hint become more important
+
+      Produce a brief onboarding summary and pass to the stamp task.
+
+  - id: stamp_pipeline
+    title: "Launch CMO Pipeline: {{product}}"
+    assignee: launcher
+    parents: [validate_input]
+    priority: 5
+    body: |
+      Stamp the full CMO Pipeline for "{{product}}".
+
+      ```bash
+      bun /Users/clawdbot/clawd/workspace/kimaki-kanban/src/cli.mjs stamp cmo-pipeline \
+        --var product="{{product}}" \
+        --var tenant="{{tenant}}" \
+        --var vertical="{{vertical}}" \
+        --var spoke_count="{{spoke_count}}" \
+        --var cornerstone_count="{{cornerstone_count}}" \
+        --var platforms="{{platforms}}" \
+        --var audience_hint="{{audience_hint}}" \
+        --var competitor_hint="{{competitor_hint}}" \
+        --var launch_date="{{launch_date}}" \
+        --var website_url="{{website_url}}" \
+        --var business_idea="{{business_idea}}" \
+        --db /Users/clawdbot/.kimaki/kanban.db
+      ```
+
+      The CMO Pipeline will:
+      1. Phase 0: Intake (scrape site or process business idea)
+      2. Phase 1: Foundation (voice, audience, competitors, landscape, positioning, funnel map)
+      3. Phase 2: Visual identity
+      4. Phase 3: Strategy (keywords, silo structure, link-map.json)
+      5. Phase 4: Content production (stamps blog-social-campaign for each spoke + cornerstone)
+      6. Phase 5: Link network
+      7. Phase 6: Distribution + launch
+      8. Phase 7: Evergreen audit + learnings
+
+      Each content asset passes the full 10-layer Content Quality Standard.
+      See: workspace/kimaki-kanban/content-quality-standard.md
+
+      Report: the stamped pipeline's board ID and task list.
+      The dispatcher will pick up tasks automatically.

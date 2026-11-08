@@ -1,0 +1,52 @@
+{
+  "runId": "2026-11-06T15-14-54-810Z-deepseek",
+  "adapterId": "deepseek",
+  "adapterStatus": {
+    "ready": true,
+    "detail": "openrouter · 417 models · deepseek/deepseek-v4.1-flash"
+  },
+  "persistedDefault": null,
+  "manifestVersion": "1.0.0",
+  "results": [
+    {
+      "id": "agc-09-daily-summary",
+      "name": "Daily ops summary",
+      "status": "ok",
+      "pass": true,
+      "failures": [],
+      "costUsd": 0.001252,
+      "usage": {
+        "input": 250,
+        "output": 2185,
+        "cacheHit": 0,
+        "cacheMiss": 250
+      },
+      "durationMs": 17291,
+      "outputLen": 1434,
+      "output": "**Daily Operations Summary — Hickory (for Lionel)**\n\n**Inquiries**\n- Wedding: August, 120 pax — new inquiry. Needs qualification; do not assume venue availability or hold a date until checked.\n- Quinceañera: September, 90 pax — new inquiry. Needs qualification; same availability check required.\n\n**Quote approvals**\n- Corporate lunch, 45 pax — quote is pending approval. Do not confirm pricing, date, or any commitment until approved.\n\n**Events / follow-ups**\n- Retirement event, 60 pax — completed. Client asked about a November booking; warm follow-up opportunity. Capture date, guest count, and menu needs, then check availability before quoting.\n\n**Blockers / admin**\n- Expense submitted: $412.60 groceries — pending review/approval.\n- Instagram draft — awaiting approval before scheduling/posting.\n\n**NEXT ACTIONS (ordered by revenue impact)**\n1. Respond to and qualify the August wedding inquiry (120 pax); check venue availability before offering or holding any date.\n2. Respond to and qualify the September quinceañera inquiry (90 pax); check venue availability before offering or holding any date.\n3. Resolve approval on the corporate lunch quote (45 pax), then follow up with the client; no commitments until approved.\n4. Follow up with the retirement client about the November booking; capture requirements and check availability before quoting.\n\nPending non-revenue approvals: $412.60 grocery expense and Instagram draft."
+    }
+  ],
+  "summary": {
+    "runId": "2026-11-06T15-14-54-810Z-deepseek",
+    "finishedAt": "2026-11-06T15:15:12.102Z",
+    "telemetryFile": "/Users/clawdbot/clawd/huckleberry/tests/baseline/telemetry-2026-11-06T15-14-54-810Z-deepseek.jsonl",
+    "tasks": 1,
+    "ok": 1,
+    "failed": 0,
+    "tokensIn": 250,
+    "tokensOut": 2185,
+    "costUsd": 0.001252,
+    "byAdapter": {
+      "deepseek": {
+        "tasks": 1,
+        "ok": 1,
+        "failed": 0,
+        "tokensIn": 250,
+        "tokensOut": 2185,
+        "costUsd": 0.001252
+      }
+    },
+    "checksPassed": 1,
+    "checksTotal": 1
+  }
+}

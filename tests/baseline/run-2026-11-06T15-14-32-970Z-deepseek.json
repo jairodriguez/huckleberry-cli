@@ -1,0 +1,52 @@
+{
+  "runId": "2026-11-06T15-14-32-970Z-deepseek",
+  "adapterId": "deepseek",
+  "adapterStatus": {
+    "ready": true,
+    "detail": "openrouter · 417 models · deepseek/deepseek-v4.1-flash"
+  },
+  "persistedDefault": null,
+  "manifestVersion": "1.0.0",
+  "results": [
+    {
+      "id": "agc-01-booking-inquiry",
+      "name": "Booking inquiry handling",
+      "status": "ok",
+      "pass": true,
+      "failures": [],
+      "costUsd": 0.001229,
+      "usage": {
+        "input": 227,
+        "output": 2147,
+        "cacheHit": 0,
+        "cacheMiss": 227
+      },
+      "durationMs": 19592,
+      "outputLen": 1540,
+      "output": "Hi [Name]! Thanks for reaching out to AG Catering & Events. Yes, we cater weddings in Fort McMurray, and a Latin fusion menu with vegetarian options is absolutely something we can work with. We’re catering-only — no in-house restaurant — and we don’t provide flat per-plate pricing until we understand the event. Pricing depends on menu, service style, venue logistics, date, and final guest count, so the next step is a short qualification before we prepare a custom quote.\n\nTo check our calendar and get you accurate options, could you send:\n\n1. Guest count: Is 120 firm or an estimate?\n2. Date + service time: Which Saturday in August, and what time should food be served?\n3. Venue: Name/address, and is it already booked/confirmed? We can’t assume venue availability — if it’s not booked yet, let us know what you’re considering.\n4. Menu direction: Latin fusion + vegetarian — any must-have dishes, allergies/dietary restrictions, or cultural/religious requirements? Also, what service style are you thinking: buffet, plated, family-style, or stations?\n5. Service needs: Staff, rentals, bar, dessert, late-night snack, etc.?\n6. Budget range: Helpful so we can shape realistic options.\n7. Contact info: Best name, email, and phone for the quote.\n\nOnce we have those details, our event lead will follow up with menu options and a custom quote. August Saturdays can fill quickly, so the exact date helps. A quote does not hold a date — we’ll confirm availability and booking steps in writing. If this is time-sensitive, call us at [phone]."
+    }
+  ],
+  "summary": {
+    "runId": "2026-11-06T15-14-32-970Z-deepseek",
+    "finishedAt": "2026-11-06T15:14:52.564Z",
+    "telemetryFile": "/Users/clawdbot/clawd/huckleberry/tests/baseline/telemetry-2026-11-06T15-14-32-970Z-deepseek.jsonl",
+    "tasks": 1,
+    "ok": 1,
+    "failed": 0,
+    "tokensIn": 227,
+    "tokensOut": 2147,
+    "costUsd": 0.001229,
+    "byAdapter": {
+      "deepseek": {
+        "tasks": 1,
+        "ok": 1,
+        "failed": 0,
+        "tokensIn": 227,
+        "tokensOut": 2147,
+        "costUsd": 0.001229
+      }
+    },
+    "checksPassed": 1,
+    "checksTotal": 1
+  }
+}

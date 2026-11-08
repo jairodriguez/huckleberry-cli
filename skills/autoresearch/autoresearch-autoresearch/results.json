@@ -1,0 +1,44 @@
+{
+  "skill_name": "autoresearch",
+  "status": "complete",
+  "current_experiment": 2,
+  "baseline_score": 87.5,
+  "best_score": 100.0,
+  "max_score": 8,
+  "experiments": [
+    {
+      "id": 0,
+      "score": 7,
+      "max_score": 8,
+      "pass_rate": 87.5,
+      "status": "baseline",
+      "description": "original skill — no changes"
+    },
+    {
+      "id": 1,
+      "score": 8,
+      "max_score": 8,
+      "pass_rate": 100.0,
+      "status": "keep",
+      "description": "added defaults for incomplete context"
+    },
+    {
+      "id": 2,
+      "score": 8,
+      "max_score": 8,
+      "pass_rate": 100.0,
+      "status": "discard",
+      "description": "removed Chart.js dependency (simplification)"
+    }
+  ],
+  "eval_breakdown": [
+    {"name": "Has all required sections", "pass_count": 1, "total": 1},
+    {"name": "Binary evals enforced", "pass_count": 1, "total": 1},
+    {"name": "Baseline before changes", "pass_count": 1, "total": 1},
+    {"name": "One mutation at a time", "pass_count": 1, "total": 1},
+    {"name": "Complete output artifacts", "pass_count": 1, "total": 1},
+    {"name": "Keep/discard criteria defined", "pass_count": 1, "total": 1},
+    {"name": "Autonomous loop", "pass_count": 1, "total": 1},
+    {"name": "Handles incomplete context", "pass_count": 1, "total": 1}
+  ]
+}

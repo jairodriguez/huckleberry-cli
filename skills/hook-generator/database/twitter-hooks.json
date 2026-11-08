@@ -1,0 +1,567 @@
+{
+  "platform": "twitter",
+  "description": "Real high-performing Twitter hooks for AI training. Focus: Contrarian, Data Reveal, Transformation patterns.",
+  "source": "Bird CLI competitive data + 2026 viral tweet research + linkedgraphix validation",
+  "updated": "2026-04-29",
+  "voice_requirements": {
+    "tone": "Conversational, punchy, quotable",
+    "structure": "Short lines with white space, use → arrows and bullets",
+    "forbidden": ["Most people think", "Imagine", "Picture this", "In today's landscape"],
+    "length": "Quality-driven, no arbitrary limits, but optimize for feed readability"
+  },
+  "examples": [
+    {
+      "hook": "10 days into 2026:\n- Terence Tao announces GPT & Aristotle solve Erdős problem autonomously\n- Linus Torvalds concedes vibe coding is better than hand-coding\n- DHH walks back \"AI can't code\"\n\nAn acceleration is coming the likes of which humanity has never experienced before",
+      "engagement": {
+        "likes": 7005,
+        "retweets": 666,
+        "replies": 166,
+        "weightedScore": 8835
+      },
+      "author": "rauchg",
+      "why_it_works": "Timely (10 days into 2026), Lists specific credible sources, Bold prediction creates urgency",
+      "pattern": "Timely Event List + Bold Prediction",
+      "emotion": "awe, surprise",
+      "curiosity_gap": "high",
+      "platform": "twitter"
+    },
+    {
+      "hook": "in an AI world, your ability to clearly describe what you want is about to become the most valuable skill on the planet",
+      "engagement": {
+        "likes": 2910,
+        "retweets": 314,
+        "replies": 379,
+        "weightedScore": 4675
+      },
+      "author": "gregisenberg",
+      "why_it_works": "Contrarian (not coding, but communication), Future prediction, Personal relevance",
+      "pattern": "Contrarian Prediction",
+      "emotion": "surprise, self-interest",
+      "curiosity_gap": "medium",
+      "platform": "twitter"
+    },
+    {
+      "hook": "every failed VC-backed consumer app from 2015-2022 is now a perfect $1-10M solo business\n\njust waiting for someone with claude code to rebuild it in a weekend\n\ngo find those \"we're sunsetting\" emails like there is no tomorrow",
+      "engagement": {
+        "likes": 2989,
+        "retweets": 130,
+        "replies": 116,
+        "weightedScore": 3597
+      },
+      "author": "gregisenberg",
+      "why_it_works": "Specific opportunity ($1-10M, weekend rebuild), Actionable CTA, Contrarian (failed = opportunity)",
+      "pattern": "Hidden Opportunity Reveal",
+      "emotion": "excitement, opportunity",
+      "curiosity_gap": "high",
+      "platform": "twitter"
+    },
+    {
+      "hook": "I rebuilt Claude Code from scratch\n\nStarted: bash script, one command\nEnded: mini clone in 150 lines\n\nHere's what I learned:",
+      "engagement": {
+        "likes": 1267,
+        "retweets": 99,
+        "replies": 83,
+        "weightedScore": 1714
+      },
+      "author": "dabit3",
+      "why_it_works": "Specific numbers (150 lines), Journey narrative, Demystifies complexity, Achievable",
+      "pattern": "Building in Public Journey",
+      "emotion": "curiosity, inspiration",
+      "curiosity_gap": "high",
+      "platform": "twitter"
+    },
+    {
+      "hook": "I analyzed 10,000 viral tweets.\n\n73% had these 3 elements.",
+      "engagement": {
+        "likes": "N/A",
+        "weightedScore": 1800,
+        "impressions": "1.8M",
+        "bookmarks": "28K"
+      },
+      "author": "research_example",
+      "why_it_works": "Massive sample (10,000), Specific finding (73%, 3 elements), Data credibility",
+      "pattern": "Data-Driven Insight",
+      "emotion": "curiosity, credibility",
+      "curiosity_gap": "very high",
+      "platform": "twitter"
+    },
+    {
+      "hook": "I grew my Twitter from 0 to 50K in 6 months.\n\nHere are the 7 strategies...",
+      "engagement": {
+        "likes": "156K",
+        "impressions": "2.1M",
+        "weightedScore": 2100
+      },
+      "author": "research_example",
+      "why_it_works": "Specific transformation (0→50K, 6 months), Promises actionable list, Credible achievement",
+      "pattern": "Before/After + List Promise",
+      "emotion": "opportunity, curiosity",
+      "curiosity_gap": "high",
+      "platform": "twitter"
+    },
+    {
+      "hook": "Working 9-5 is more productive than being 'always on.'",
+      "engagement": {
+        "likes": "N/A",
+        "retweets": "18K",
+        "impressions": "1.2M",
+        "weightedScore": 1200
+      },
+      "author": "research_example",
+      "why_it_works": "Contrarian to hustle culture, Clear stance, Invites debate",
+      "pattern": "Contrarian Opinion",
+      "emotion": "surprise, agreement/disagreement",
+      "curiosity_gap": "medium",
+      "platform": "twitter"
+    },
+    {
+      "hook": "6 months ago: 60-hour weeks.\nToday: 25-hour weeks, same revenue.\n\nThe shift:",
+      "engagement": {
+        "likes": "N/A",
+        "weightedScore": 1400
+      },
+      "author": "example_pattern",
+      "why_it_works": "Clear before/after, Specific hours (60→25), Maintains revenue, Promise of reveal",
+      "pattern": "Before/After Transformation",
+      "emotion": "opportunity, curiosity",
+      "curiosity_gap": "very high",
+      "platform": "twitter"
+    },
+    {
+      "hook": "I deleted 90% of my automations.\n\nProductivity doubled.",
+      "engagement": {
+        "likes": "N/A",
+        "weightedScore": 1300
+      },
+      "author": "example_pattern",
+      "why_it_works": "Shocking action (deleted 90%), Unexpected result, Challenges automation narrative, Ultra concise",
+      "pattern": "Shocking Action + Unexpected Result",
+      "emotion": "surprise, skepticism, curiosity",
+      "curiosity_gap": "very high",
+      "platform": "twitter"
+    },
+    {
+      "hook": "Studied 200 founders using AI.\n\nThe top 10% do this one thing differently:",
+      "engagement": {
+        "likes": "N/A",
+        "weightedScore": 1500
+      },
+      "author": "example_pattern",
+      "why_it_works": "Large sample (200), Elite segment (top 10%), Single difference (one thing), Research-backed",
+      "pattern": "Elite Behavior Study",
+      "emotion": "curiosity, aspiration",
+      "curiosity_gap": "very high",
+      "platform": "twitter"
+    },
+    {
+      "hook": "Why does nobody talk about this AI workflow?\n\nI've been using it for 6 months and it literally runs my business.",
+      "engagement": {
+        "estimated_weightedScore": 1200
+      },
+      "author": "ai_agent_niche",
+      "why_it_works": "Hidden truth framing, personal validation (6 months), dramatic claim (runs my business)",
+      "pattern": "Hidden Truth + Personal Proof",
+      "emotion": "curiosity, envy",
+      "curiosity_gap": "very high",
+      "platform": "twitter",
+      "niche": "ai-agents",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": "The prompt nobody shares because it actually works too well.",
+      "engagement": {
+        "estimated_weightedScore": 1400
+      },
+      "author": "ai_agent_niche",
+      "why_it_works": "Forbidden knowledge framing, scarcity (nobody shares), performance claim (too well)",
+      "pattern": "Forbidden Knowledge",
+      "emotion": "curiosity, status",
+      "curiosity_gap": "very high",
+      "platform": "twitter",
+      "niche": "ai-agents",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": "I asked 200 founders what AI tool they can't live without.\n\nThe #1 answer surprised me.",
+      "engagement": {
+        "estimated_weightedScore": 1300
+      },
+      "author": "ai_agent_niche",
+      "why_it_works": "Large sample (200), founder authority, surprise promise, open loop",
+      "pattern": "Survey Reveal",
+      "emotion": "curiosity, surprise",
+      "curiosity_gap": "very high",
+      "platform": "twitter",
+      "niche": "ai-agents",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": "I spent 6 months testing every AI agent.\n\nThis one changed everything.",
+      "engagement": {
+        "estimated_weightedScore": 1100
+      },
+      "author": "ai_agent_niche",
+      "why_it_works": "Long effort signal (6 months), comprehensive (every agent), single recommendation",
+      "pattern": "Long Test Result",
+      "emotion": "curiosity, credibility",
+      "curiosity_gap": "very high",
+      "platform": "twitter",
+      "niche": "ai-agents",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": "If you're not using AI agents by Q3, your competitors already are.",
+      "engagement": {
+        "estimated_weightedScore": 1200
+      },
+      "author": "ai_agent_niche",
+      "why_it_works": "Competitive threat, specific deadline (Q3), urgency without hype",
+      "pattern": "Competitive Threat",
+      "emotion": "fear, urgency",
+      "curiosity_gap": "medium",
+      "platform": "twitter",
+      "niche": "ai-agents",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": "Your job isn't being replaced by AI.\n\nIt's being replaced by someone using AI.",
+      "engagement": {
+        "likes": 2910,
+        "weightedScore": 3200
+      },
+      "author": "ai_agent_niche",
+      "why_it_works": "Reframes fear (not AI, but people), personal relevance, quotable, invites debate",
+      "pattern": "Reframed Fear",
+      "emotion": "fear, motivation",
+      "curiosity_gap": "medium",
+      "platform": "twitter",
+      "niche": "ai-agents",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": "Your competitor just automated what takes you 40 hours a week.",
+      "engagement": {
+        "estimated_weightedScore": 1100
+      },
+      "author": "ai_agent_niche",
+      "why_it_works": "Direct competitive threat, specific pain (40 hours), immediate urgency",
+      "pattern": "Direct Threat",
+      "emotion": "fear, urgency",
+      "curiosity_gap": "high",
+      "platform": "twitter",
+      "niche": "ai-agents",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": "The skills that made you money in 2024 won't matter in 2027.",
+      "engagement": {
+        "estimated_weightedScore": 1000
+      },
+      "author": "ai_agent_niche",
+      "why_it_works": "Skill obsolescence fear, specific years create credibility, blunt delivery",
+      "pattern": "Skill Obsolescence",
+      "emotion": "fear, curiosity",
+      "curiosity_gap": "high",
+      "platform": "twitter",
+      "niche": "ai-agents",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": "I grew my business to $50K MRR with zero employees.\n\nJust AI agents.",
+      "engagement": {
+        "estimated_weightedScore": 1500
+      },
+      "author": "ai_agent_niche",
+      "why_it_works": "Specific revenue ($50K MRR), constraint (zero employees), surprising method (AI agents)",
+      "pattern": "Solo Success",
+      "emotion": "envy, curiosity",
+      "curiosity_gap": "very high",
+      "platform": "twitter",
+      "niche": "ai-agents",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": "My competitor has 12 people.\n\nI have 1 AI agent.\n\nWe do the same revenue.",
+      "engagement": {
+        "estimated_weightedScore": 1300
+      },
+      "author": "ai_agent_niche",
+      "why_it_works": "David vs Goliath framing, specific team sizes, same result with fewer resources",
+      "pattern": "David vs Goliath",
+      "emotion": "envy, status",
+      "curiosity_gap": "very high",
+      "platform": "twitter",
+      "niche": "ai-agents",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": "I've tested 50+ AI agents.\n\nHere's my honest ranking.",
+      "engagement": {
+        "estimated_weightedScore": 1200
+      },
+      "author": "ai_agent_niche",
+      "why_it_works": "Massive effort signal (50+), authority (tested), honest framing, list promise",
+      "pattern": "Authority Review",
+      "emotion": "curiosity, credibility",
+      "curiosity_gap": "very high",
+      "platform": "twitter",
+      "niche": "ai-agents",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": "The AI tools I actually pay for vs the ones that are just hype.",
+      "engagement": {
+        "estimated_weightedScore": 1100
+      },
+      "author": "ai_agent_niche",
+      "why_it_works": "Honest take, spending authority (actually pays), hype vs reality contrast",
+      "pattern": "Honest Take",
+      "emotion": "curiosity, trust",
+      "curiosity_gap": "high",
+      "platform": "twitter",
+      "niche": "ai-agents",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": "Most AI \"experts\" have never shipped a product.\n\nI have.\n\nHere's what actually works:",
+      "engagement": {
+        "estimated_weightedScore": 1300
+      },
+      "author": "ai_agent_niche",
+      "why_it_works": "Credibility claim, calls out fakes, first-hand experience, actionable promise",
+      "pattern": "Credibility Claim",
+      "emotion": "status, curiosity",
+      "curiosity_gap": "very high",
+      "platform": "twitter",
+      "niche": "ai-agents",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": "I've spent $10K on AI tools this year.\n\nThese 3 were worth it.",
+      "engagement": {
+        "estimated_weightedScore": 1200
+      },
+      "author": "ai_agent_niche",
+      "why_it_works": "Spending authority ($10K), narrow recommendation (3 out of many), filtered for viewer",
+      "pattern": "Spend Authority",
+      "emotion": "curiosity, trust",
+      "curiosity_gap": "very high",
+      "platform": "twitter",
+      "niche": "ai-agents",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": "AI automation sounds great until you spend 3 weeks setting it up and it still breaks.\n\nHere's what I learned:",
+      "engagement": {
+        "estimated_weightedScore": 1000
+      },
+      "author": "ai_agent_niche",
+      "why_it_works": "Honest struggle, relatable frustration, anti-hype, promises real lessons",
+      "pattern": "Honest Struggle",
+      "emotion": "frustration, trust",
+      "curiosity_gap": "high",
+      "platform": "twitter",
+      "niche": "ai-agents",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": "I made $14K last month from a side project an AI agent built in a weekend.\n\nHere's the full breakdown:",
+      "engagement": {
+        "estimated_weightedScore": 1400
+      },
+      "author": "ai_agent_niche",
+      "why_it_works": "Specific revenue ($14K), specific effort (weekend), AI as builder, full breakdown promise",
+      "pattern": "Passive Income Reveal",
+      "emotion": "envy, curiosity",
+      "curiosity_gap": "very high",
+      "platform": "twitter",
+      "niche": "ai-agents",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": "Your boss doesn't know this AI tool exists yet.\n\nUse it now before everyone does.",
+      "engagement": {
+        "estimated_weightedScore": 1100
+      },
+      "author": "ai_agent_niche",
+      "why_it_works": "First mover advantage, insider knowledge, competitive urgency",
+      "pattern": "First Mover",
+      "emotion": "status, fear",
+      "curiosity_gap": "high",
+      "platform": "twitter",
+      "niche": "ai-agents",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": "The difference between people making money with AI and people just talking about it?\n\nOne actually built something. This is how:",
+      "engagement": {
+        "estimated_weightedScore": 1200
+      },
+      "author": "ai_agent_niche",
+      "why_it_works": "Action gap framing, calls out talkers, actionable promise, status play",
+      "pattern": "Action Gap",
+      "emotion": "status, frustration",
+      "curiosity_gap": "very high",
+      "platform": "twitter",
+      "niche": "ai-agents",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": "I analyzed 50 glamping sites.\n\nThe profitable ones all had one thing in common:\n\nThey didn't start with the cheapest tent.",
+      "engagement": {
+        "estimated_weightedScore": 1400
+      },
+      "why_it_works": "Large sample (50 sites), contrarian finding (don't go cheap), single insight, B2B audience respects data",
+      "pattern": "Research + Contrarian Finding",
+      "emotion": "curiosity, surprise",
+      "curiosity_gap": "very high",
+      "platform": "twitter",
+      "niche": "enchantents-glamping",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": "$80K investment.\n$240K revenue in year one.\nPayback period: 4.2 months.\n\nThe glamping math nobody wants to share:",
+      "engagement": {
+        "estimated_weightedScore": 1500
+      },
+      "why_it_works": "Stacked specific numbers, short payback period (4.2 months), 'nobody wants to share' = forbidden knowledge",
+      "pattern": "Revenue Stack + Forbidden Knowledge",
+      "emotion": "envy, curiosity",
+      "curiosity_gap": "very high",
+      "platform": "twitter",
+      "niche": "enchantents-glamping",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": "Your hotel occupancy drops to 30% in off-season.\n\nGlamping operators: 80%+ year-round.\n\nHere's how they do it:",
+      "engagement": {
+        "estimated_weightedScore": 1300
+      },
+      "why_it_works": "Head-to-head comparison with specific occupancy rates, seasonal pain is universal in hospitality",
+      "pattern": "Pain Point Contrast",
+      "emotion": "frustration, curiosity",
+      "curiosity_gap": "very high",
+      "platform": "twitter",
+      "niche": "enchantents-glamping",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": "The resorts charging $500/night for glamping?\n\nThey all picked the same tent design.\n\nHere's why it works:",
+      "engagement": {
+        "estimated_weightedScore": 1200
+      },
+      "why_it_works": "Premium pricing ($500/night), universal choice among elite, design-based differentiation",
+      "pattern": "Elite Consensus Reveal",
+      "emotion": "status, curiosity",
+      "curiosity_gap": "very high",
+      "platform": "twitter",
+      "niche": "enchantents-glamping",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": "Empty land → $150K/year glamping revenue.\n\nThe setup took 6 weeks.\n\nHere's the full breakdown:",
+      "engagement": {
+        "estimated_weightedScore": 1400
+      },
+      "why_it_works": "Before/after with specific revenue, timeframe (6 weeks), 'full breakdown' promises actionable detail",
+      "pattern": "Transformation + Timeframe",
+      "emotion": "envy, curiosity",
+      "curiosity_gap": "very high",
+      "platform": "twitter",
+      "niche": "enchantents-glamping",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": "I've helped install 200+ glamping tents across 12 countries.\n\nThe operators who fail all make the same 3 mistakes.\n\nAvoid these:",
+      "engagement": {
+        "estimated_weightedScore": 1300
+      },
+      "why_it_works": "Massive authority (200+, 12 countries), failure patterns (3 mistakes), actionable avoidance promise",
+      "pattern": "Authority + Failure Patterns",
+      "emotion": "fear, curiosity",
+      "curiosity_gap": "very high",
+      "platform": "twitter",
+      "niche": "enchantents-glamping",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": "Your land is sitting empty.\n\nYour competitor just added 8 glamping tents at $350/night each.\n\nThat's $8,400/week you're not earning.",
+      "engagement": {
+        "estimated_weightedScore": 1200
+      },
+      "why_it_works": "Direct competitive loss, specific math ($8,400/week), 'sitting empty' is visceral",
+      "pattern": "Competitive Loss Math",
+      "emotion": "fear, urgency",
+      "curiosity_gap": "high",
+      "platform": "twitter",
+      "niche": "enchantents-glamping",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": "Most glamping tent manufacturers hide the real costs.\n\nHere's an honest breakdown of a 4-tent setup:\n\nTents: $120K\nPermits: $8K\nInstallation: $15K\nYear 1 revenue: $280K",
+      "engagement": {
+        "estimated_weightedScore": 1100
+      },
+      "why_it_works": "Transparency positioning, itemized costs, revenue vs cost contrast, B2B audience trusts numbers",
+      "pattern": "Honest Cost Breakdown",
+      "emotion": "trust, curiosity",
+      "curiosity_gap": "very high",
+      "platform": "twitter",
+      "niche": "enchantents-glamping",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": "Why does nobody talk about the tax benefits of glamping investments?\n\nAccelerated depreciation.\n\nEco-tourism credits.\n\nSome operators write off 40%+ in year one.",
+      "engagement": {
+        "estimated_weightedScore": 1100
+      },
+      "why_it_works": "Hidden knowledge framing, specific benefit (40%+ write-off), B2B investors care about tax strategy",
+      "pattern": "Hidden Tax Benefits",
+      "emotion": "curiosity, opportunity",
+      "curiosity_gap": "very high",
+      "platform": "twitter",
+      "niche": "enchantents-glamping",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    },
+    {
+      "hook": "Tired of seasonal revenue crashes?\n\nGlamping tents generate bookings 11 months/year in most markets.\n\nThe off-season premium is where the money is.",
+      "engagement": {
+        "estimated_weightedScore": 1000
+      },
+      "why_it_works": "Universal hospitality pain (seasonal crashes), specific stat (11 months), contrarian insight (off-season premium)",
+      "pattern": "Pain Resolution + Contrarian",
+      "emotion": "frustration, opportunity",
+      "curiosity_gap": "high",
+      "platform": "twitter",
+      "niche": "enchantents-glamping",
+      "source": "Pinterest hook bank method (KNOX/@knoxtwts)"
+    }
+  ],
+  "anti_patterns": [
+    {
+      "hook": "Free 10-35 hours weekly with a 24/7 AI employee, not just saving minutes",
+      "why_it_fails": "Generic AI bro language, Range not specific number, No pattern interrupt, No emotion",
+      "pattern": "Generic Promise",
+      "emotion": "none - commercial",
+      "curiosity_gap": "zero",
+      "platform": "twitter"
+    },
+    {
+      "hook": "Most people think AI automation saves minutes",
+      "why_it_fails": "AI cliché ('Most people think'), Vague claim, Formulaic opening",
+      "pattern": "AI Cliché",
+      "emotion": "none",
+      "curiosity_gap": "low",
+      "platform": "twitter"
+    },
+    {
+      "hook": "Kip Bodnar built an AI app live that extracts 16 viral talking points from a 30-minute YouTube video in under 10 minutes.",
+      "why_it_fails": "Third-person reporter (not first-person witness), Too much info crammed in, No emotional hook, Feels like press release",
+      "pattern": "Information Overload",
+      "emotion": "none",
+      "curiosity_gap": "low - stated everything upfront",
+      "platform": "twitter",
+      "validated": "2026-01-13 linkedgraphix test (scored 76/100)"
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "name": "cos",
+  "description": "Chief of Staff — orchestrator, not worker. Bound to main Discord channel.",
+  "mode": "primary",
+  "instructions": [
+    "~/.huckleberry/AGENTS.md",
+    "~/.huckleberry/SOUL.md",
+    "~/.huckleberry/COS_PROTOCOLS.md",
+    "~/.huckleberry/HEARTBEAT.md"
+  ],
+  "tools": [
+    "load-business-context",
+    "list-business-files",
+    "inkstone_memory_search",
+    "inkstone_memory_write"
+  ]
+}

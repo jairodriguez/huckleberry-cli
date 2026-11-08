@@ -1,0 +1,193 @@
+{
+  "runId": "2026-11-06T15-03-32-345Z-deepseek",
+  "adapterId": "deepseek",
+  "adapterStatus": {
+    "ready": true,
+    "detail": "openrouter · 453 models · deepseek/deepseek-v4.1-flash"
+  },
+  "persistedDefault": null,
+  "manifestVersion": "1.0.0",
+  "results": [
+    {
+      "id": "agc-01-booking-inquiry",
+      "name": "Booking inquiry handling",
+      "status": "error",
+      "pass": false,
+      "failures": [
+        "adapter status: error — openrouter API 401: {\"error\":{\"message\":\"User not found.\",\"code\":401}}"
+      ],
+      "costUsd": 0,
+      "usage": {
+        "input": 0,
+        "output": 0
+      },
+      "durationMs": 206,
+      "outputLen": 0
+    },
+    {
+      "id": "agc-02-quote-draft",
+      "name": "Quote draft",
+      "status": "error",
+      "pass": false,
+      "failures": [
+        "adapter status: error — openrouter API 401: {\"error\":{\"message\":\"User not found.\",\"code\":401}}"
+      ],
+      "costUsd": 0,
+      "usage": {
+        "input": 0,
+        "output": 0
+      },
+      "durationMs": 109,
+      "outputLen": 0
+    },
+    {
+      "id": "agc-03-invoice-expense-gst",
+      "name": "Invoice + expense logging with GST/CAD rules",
+      "status": "error",
+      "pass": false,
+      "failures": [
+        "adapter status: error — openrouter API 401: {\"error\":{\"message\":\"User not found.\",\"code\":401}}"
+      ],
+      "costUsd": 0,
+      "usage": {
+        "input": 0,
+        "output": 0
+      },
+      "durationMs": 150,
+      "outputLen": 0
+    },
+    {
+      "id": "agc-04-event-coordination",
+      "name": "Event coordination checklist",
+      "status": "error",
+      "pass": false,
+      "failures": [
+        "adapter status: error — openrouter API 401: {\"error\":{\"message\":\"User not found.\",\"code\":401}}"
+      ],
+      "costUsd": 0,
+      "usage": {
+        "input": 0,
+        "output": 0
+      },
+      "durationMs": 99,
+      "outputLen": 0
+    },
+    {
+      "id": "agc-05-bilingual-reply",
+      "name": "Bilingual EN/ES reply",
+      "status": "error",
+      "pass": false,
+      "failures": [
+        "adapter status: error — openrouter API 401: {\"error\":{\"message\":\"User not found.\",\"code\":401}}"
+      ],
+      "costUsd": 0,
+      "usage": {
+        "input": 0,
+        "output": 0
+      },
+      "durationMs": 118,
+      "outputLen": 0
+    },
+    {
+      "id": "agc-06-social-post-gated",
+      "name": "Social post behind approval gate",
+      "status": "error",
+      "pass": false,
+      "failures": [
+        "adapter status: error — openrouter API 401: {\"error\":{\"message\":\"User not found.\",\"code\":401}}"
+      ],
+      "costUsd": 0,
+      "usage": {
+        "input": 0,
+        "output": 0
+      },
+      "durationMs": 125,
+      "outputLen": 0
+    },
+    {
+      "id": "agc-07-web-inquiry-response",
+      "name": "Web inquiry form response",
+      "status": "error",
+      "pass": false,
+      "failures": [
+        "adapter status: error — openrouter API 401: {\"error\":{\"message\":\"User not found.\",\"code\":401}}"
+      ],
+      "costUsd": 0,
+      "usage": {
+        "input": 0,
+        "output": 0
+      },
+      "durationMs": 101,
+      "outputLen": 0
+    },
+    {
+      "id": "agc-08-prospecting-step",
+      "name": "Prospecting pipeline step",
+      "status": "error",
+      "pass": false,
+      "failures": [
+        "adapter status: error — openrouter API 401: {\"error\":{\"message\":\"User not found.\",\"code\":401}}"
+      ],
+      "costUsd": 0,
+      "usage": {
+        "input": 0,
+        "output": 0
+      },
+      "durationMs": 114,
+      "outputLen": 0
+    },
+    {
+      "id": "agc-09-daily-summary",
+      "name": "Daily ops summary",
+      "status": "error",
+      "pass": false,
+      "failures": [
+        "adapter status: error — openrouter API 401: {\"error\":{\"message\":\"User not found.\",\"code\":401}}"
+      ],
+      "costUsd": 0,
+      "usage": {
+        "input": 0,
+        "output": 0
+      },
+      "durationMs": 100,
+      "outputLen": 0
+    },
+    {
+      "id": "agc-10-human-escalation",
+      "name": "Human escalation path",
+      "status": "error",
+      "pass": false,
+      "failures": [
+        "adapter status: error — openrouter API 401: {\"error\":{\"message\":\"User not found.\",\"code\":401}}"
+      ],
+      "costUsd": 0,
+      "usage": {
+        "input": 0,
+        "output": 0
+      },
+      "durationMs": 219,
+      "outputLen": 0
+    }
+  ],
+  "summary": {
+    "runId": "2026-11-06T15-03-32-345Z-deepseek",
+    "finishedAt": "2026-11-06T15:03:33.689Z",
+    "telemetryFile": "/Users/clawdbot/clawd/huckleberry/tests/baseline/telemetry-2026-11-06T15-03-32-345Z-deepseek.jsonl",
+    "tasks": 10,
+    "ok": 0,
+    "failed": 10,
+    "tokensIn": 0,
+    "tokensOut": 0,
+    "costUsd": 0,
+    "byAdapter": {
+      "deepseek": {
+        "tasks": 10,
+        "ok": 0,
+        "failed": 10,
+        "tokensIn": 0,
+        "tokensOut": 0,
+        "costUsd": 0
+      }
+    }
+  }
+}

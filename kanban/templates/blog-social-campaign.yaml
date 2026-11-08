@@ -1,0 +1,1165 @@
+name: Content Campaign (NLM-Grounded + Full Quality Stack + Learning Loop)
+description: >
+  Full content pipeline with NLM-grounded drafts, intent-driven outlines, structural variation,
+  SEO-ready images with metas, complete schema (Article+FAQ+Author+Breadcrumb), and a feedback
+  loop that learns from every approval/rejection.
+  14-layer pipeline: Load Lessons → Thesis → Research → Intent+Outline → NLM Draft → Hooks →
+  Polish → Enrich (images+schema) → Publish → Index → Distribute → Links → Track → Learn.
+  NLM writes from a structured intent outline (not freestyle). Harper agent enforces brand voice.
+  Every rejection feeds Inkstone + evergreen so the system improves with every article.
+  See: workspace/kimaki-kanban/content-quality-standard.md for the full spec.
+  Brand-agnostic.
+
+variables:
+  - name: topic
+    required: true
+    description: The content topic or keyword focus
+  - name: tenant
+    required: true
+    description: Brand/project tenant name (maps to a kimaki project)
+  - name: audience
+    default: general
+    description: Target audience for the content
+  - name: platforms
+    default: twitter,linkedin,reddit,medium
+    description: Comma-separated list of social platforms
+  - name: article_type
+    default: standard
+    description: "Article type: standard, vs (comparison), alternatives (roundup), storytelling, how_to, guide"
+  - name: language
+    default: en
+    description: "Article language code: en, es, fr, etc."
+  - name: funnel_id
+    required: false
+    description: Funnel ID (A-M) from the brand's funnels/ directory.
+  - name: funnel_stage
+    default: MOFU
+    description: "Funnel stage: TOFU, MOFU, or BOFU. Determines narrative arc and CTA."
+  - name: narrative_arc
+    required: false
+    description: "Override narrative arc. Auto-selected by funnel_stage if not set."
+  - name: icp_segment
+    required: false
+    description: "ICP segment this article targets (e.g. backpackers, car-campers, resort-managers). Drives pain points, language, and CTA."
+  - name: cluster_node_id
+    required: false
+    description: "Node ID in brand/topic-clusters.json. Used for internal linking and status tracking."
+
+tasks:
+  # ── LAYER -1: LOAD PAST LESSONS ────────────────────────────
+
+  - id: load_lessons
+    title: "Load quality lessons: {{topic}}"
+    assignee: build
+    skills: []
+    priority: 5
+    gate: true
+    body: |
+      Before ANY work on this article, load all past rejection and success patterns
+      for this brand. This prevents repeating mistakes and reinforces what works.
+      Every downstream task receives the compiled avoidance brief.
+
+      **1. Query Inkstone for failure patterns:**
+         inkstone_memory_failures(query="{{tenant}} article rejection content quality")
+         If Inkstone is unavailable, skip gracefully (soft dependency).
+
+      **2. Query Inkstone for success patterns:**
+         inkstone_memory_search(
+           query="{{tenant}} article approved what worked",
+           namespace="/business/{{tenant}}/content-quality",
+           limit=5
+         )
+
+      **3. Read brand evergreen content quality lessons:**
+         Read businesses/{{tenant}}/evergreen.md
+         Look for a "Content Quality Lessons" section.
+
+      **4. Compile AVOIDANCE BRIEF (save to content/_drafts/{slug}/avoidance-brief.md):**
+         ```
+         BRAND: {{tenant}}
+         DATE: [today]
+
+         DO NOT (past rejections):
+         - [list each failure pattern with specific fix]
+
+         DO (past successes):
+         - [list each success pattern to reinforce]
+
+         WATCH FOR:
+         - [recurring issues that need monitoring]
+         ```
+
+      **5. This brief is passed to EVERY downstream task.**
+         Every subagent sees it. No excuses for repeating past mistakes.
+
+  # ── LAYER 0: SHARP-THESIS VALIDATION ──────────────────────
+
+  - id: thesis_validation
+    title: "Validate sharp thesis: {{topic}}"
+    assignee: build
+    skills: [sharp-thesis-validator]
+    parents: [load_lessons]
+    priority: 4
+    gate: true
+    body: |
+      Validate that "{{topic}}" passes the Sharp-Thesis (Cerebras) Test before any work begins.
+      This is Layer 0 — blocks all downstream tasks until PASS.
+
+      Run the validator CLI (deterministic gate — do NOT hand-simulate):
+        sharp-thesis-validator "{{topic}}" --brand {{tenant}} --mode long-form --json
+      Exit codes: 0 = PASS, 1 = FAIL, 2 = usage error. Parse the JSON verdict
+      (failed_criteria, claims_blacklist_hits, failures.*.fix).
+      Fallback ONLY if the binary is missing: load the `sharp-thesis-validator`
+      skill via the skill tool and apply the criteria manually.
+
+      **On PASS:** Mark complete. Proceed to research.
+      **On FAIL:** BLOCK. Present reframing suggestions to user.
+        User must approve a reframed topic before proceeding.
+        Update the {{topic}} variable with the reframed title.
+
+      **Criteria checked:**
+      1. Single arguable claim (not "X is important" but "X does Y because Z")
+      2. Concrete number (dollar, percentage, timeframe, count)
+      3. Urgency / why now (time-bound trigger)
+      4. Title expressibility ≤80 chars (or thesis-config override)
+
+      Brand context loaded from: businesses/*/brand-assets/thesis-config.md (if exists)
+      Claims blacklist checked against: brand-overrides.md + landscape.md
+
+  # ── LAYER 1: INTELLIGENCE ───────────────────────────────────
+
+  - id: research
+    title: "Research: {{topic}}"
+    assignee: researcher
+    skills: [keyword-research, subreddit-pain-extraction, competitive-intel, audience-research]
+    parents: [thesis_validation]
+    priority: 3
+    body: |
+      Research keywords, content gaps, pain points, and audience language for "{{topic}}" targeting {{audience}}.
+      This is Layer 1 of the Content Quality Standard. Gather ALL intelligence before NLM drafting.
+      Reference: workspace/kimaki-kanban/content-quality-standard.md
+
+      Call load-business-context with include_funnels: true before starting.
+      {{#funnel_id}}
+      FUNNEL: This content serves funnel {{funnel_id}}. Read funnels/{{funnel_id}}-*.md for CTA, buyer stage, and ICP segment.
+      All research must align with this funnel's conversion path and ICP.{{/funnel_id}}
+
+      **1. Keyword research + intent classification**
+      Run keyword research for search volume, competition data, and SERP gaps.
+      Classify each keyword by intent:
+        - informational (how to, what is, best) → TOFU
+        - evaluation (comparison, review, vs) → MOFU
+        - transactional (buy, price, get) → BOFU
+      The intent classification determines the article structure (see below).
+
+      **2. PAA extraction (CRITICAL for AEO version)**
+      Extract ALL People Also Ask questions from Google SERPs for the primary keyword.
+      Save these verbatim. The AEO version of the article uses these EXACT questions as H2 headings.
+      If PAA questions are not available (new/niche keyword), generate 5-7 questions from related searches.
+
+      **3. Pain point extraction**
+      Mine Reddit for pain points around "{{topic}}". Extract verbatim "pain phrases" buyers actually use.
+      These phrases go directly into the article and into the NLM prompt.
+
+      **4. ICP language bank**
+      {{#icp_segment}}
+      Target ICP: {{icp_segment}}. Build a phrase bank of exact words/phrases
+      this specific segment uses to describe their problem.
+      {{/icp_segment}}
+      {{^icp_segment}}
+      Build a phrase bank of exact words/phrases the target audience uses.
+      {{/icp_segment}}
+
+      **5. Competitor gap analysis**
+      Check who ranks, what angles they take, what they miss.
+      Identify the content gap this article fills.
+
+      **6. Article structure guidance**
+      Based on funnel stage + keyword intent, determine the article structure:
+        - TOFU + informational → Educational explainer (what is X, how X works)
+        - TOFU + problem-aware → Problem-solution (pain → mechanism → resolution)
+        - MOFU + evaluation → Balanced comparison (criteria → evaluate → recommend)
+        - BOFU + transactional → Decision guide (use case → options → pick)
+        - BOFU + comparison → Head-to-head (overview → criteria → feature-by-feature → verdict)
+      The structure guides section headings and flow but MUST NOT inject framework labels
+      (like "The Problem", "The Agitation", "Attention:", "Desire:") into the content itself.
+      Content should read as natural educational prose, not formulaic sales copy.
+
+      **7. Topic cluster lookup**
+      Read brand/topic-clusters.json if it exists. Find the node matching this topic
+      (or create a new one). Note:
+        - Parent node (for WP category assignment and internal linking)
+        - Child nodes (for deep-dive candidates)
+        - Sibling nodes (for related content links)
+      {{#cluster_node_id}}
+      Cluster node ID: {{cluster_node_id}}. Update status to "in_progress" in topic-clusters.json.
+      {{/cluster_node_id}}
+
+      **8. Internal link map**
+      Read brand/link-map.json. Note which pages this article should link to
+      and which pages should link back to this article.
+
+      Produce a combined research brief with:
+        - Keywords with intent classification
+        - PAA questions (verbatim, for AEO structure)
+        - Pain phrases (verbatim, for article body)
+        - ICP language bank
+        - Competitive gaps
+        - Selected article structure + explanation
+        - Funnel metadata (stage, CTA, arc)
+        - Topic cluster node info (parent, children, siblings)
+        - Internal link targets
+      Save output to the brand's content directory.
+
+  # ── LAYER 1.5: INTENT + NLM OUTLINE ─────────────────────────
+
+  - id: intent_outline
+    title: "Intent + NLM outline: {{topic}}"
+    assignee: harper
+    skills: [nlm-cli, seo-content]
+    parents: [research]
+    priority: 3
+    deliverables: "businesses/{{tenant}}/content/_drafts/{{topic_slug}}/intent-outline.md|500"
+    body: |
+      Infer search intent from the keyword and build a structured NLM outline
+      that DIRECTLY ANSWERS that intent. This outline is the blueprint for the NLM draft.
+      Without this step, NLM writes freestyle and misses what the searcher actually wants.
+
+      Load the nlm-cli skill for NLM concepts. Use the notebooklm CLI (notebooklm-py v0.7.3)
+      for all commands. Run `notebooklm doctor` to verify auth. Use the notebook from research.
+
+      **1. CLASSIFY SEARCH INTENT from the primary keyword:**
+         Read the research brief. Determine the user's actual goal:
+         - Informational ("what is", "how does") → wants to understand a concept
+         - Problem-solving ("how to fix", "why does") → has a specific pain needing resolution
+         - Comparison ("X vs Y", "best X for") → choosing between options
+         - Transactional ("buy", "cost", "hire") → ready to take action
+         - Navigational ("login", "dashboard") → looking for a specific resource
+
+         State the inferred intent explicitly:
+         "The user searching '[PRIMARY KEYWORD]' wants: [INFERRED NEED]"
+
+      **2. QUERY NLM for a structured article OUTLINE (not the article):**
+
+      ```
+      notebooklm generate report --format custom --wait --json \
+        "A user searched: '[PRIMARY KEYWORD]'
+        Their intent is: [CLASSIFIED INTENT from step 1]
+        What they actually want to know: [INFERRED NEED from step 1]
+
+        Create a detailed article OUTLINE (NOT the article itself) that:
+        - Opens by acknowledging their specific situation or pain
+        - Each H2 section answers a distinct sub-question they have
+        - Flows logically: context → problem → understanding → solution → action
+        - Includes these PAA questions as H2 sections: [insert PAA questions from research]
+        - Identifies where data, examples, frameworks, or visuals are needed
+        - Marks which sections need AEO-style concise answer blocks
+
+        STRUCTURAL VARIATION IS MANDATORY in the outline:
+        - NOT every H2 section should be the same depth. Vary deliberately.
+          Some sections are 1-2 paragraphs. Others are 4-5 paragraphs. 
+          One section might be a single punchy callout.
+        - Mark the expected depth for each section (short/medium/long).
+        - This variation creates natural reading rhythm. Uniform sections are artificial.
+
+        For EACH section in the outline, specify:
+        - H2 heading (in the user's language, not industry jargon)
+        - What question this section answers
+        - Key points to cover (grounded in your sources)
+        - Expected depth: short (1-2 para), medium (3-4 para), or long (5+ para)
+        - Whether this section needs an AEO answer block (concise citable answer)
+        - Any data points or examples to include"
+      ```
+
+      **3. SAVE the outline:**
+         businesses/{{tenant}}/content/_drafts/{slug}/intent-outline.md
+
+      This outline is the BLUEPRINT. The NLM draft in Layer 2 follows it section by section.
+      The structural variation markers (short/medium/long) ensure the article reads naturally.
+
+  # ── LAYER 2: NLM GROUNDING ────────────────────────────────
+
+  - id: nlm_draft
+    title: "NLM draft: {{topic}}"
+    assignee: harper
+    skills: [nlm-cli]
+    parents: [intent_outline]
+    priority: 3
+    deliverables: "businesses/{{tenant}}/content/_drafts/{{topic_slug}}/narrative-draft.md|5000;businesses/{{tenant}}/content/_drafts/{{topic_slug}}/aeo-draft.md|2000"
+    body: |
+      Use NLM to write a grounded article draft from real expert sources.
+      NLM produces raw content. Our skills layer (hooks, voice DNA, humanizer) shapes it later.
+
+      Use the notebooklm CLI (notebooklm-py v0.7.3). Run `notebooklm doctor` to verify auth.
+
+      **1. Find and add sources**
+      Find relevant sources for "{{topic}}":
+        - Search YouTube for expert videos on the topic
+        - Search for podcast episodes (Podscan API or web search)
+        - Find authoritative articles and studies
+      Target 5-10 quality sources.
+
+      **2. Create or reuse NLM notebook**
+      Check if a notebook exists for this cluster (read brand/topic-clusters.json for notebook_id).
+      If not, create one:
+        ```
+        notebooklm create "{{tenant}}: {{topic}}" --use
+        ```
+      Add all sources (type is auto-detected):
+        ```
+        notebooklm source add "https://youtube.com/watch?v=..."
+        notebooklm source add "https://example.com/article"
+        notebooklm source add "path/to/transcript.txt"
+        ```
+      Wait 30-60 seconds for indexing after adding sources.
+      Save notebook_id to brand/topic-clusters.json.
+
+      **3. Generate or update mindmap**
+      Run mindmap creation to extract topic clusters:
+        ```
+        notebooklm generate mind-map --instructions "{{topic}} clusters" --json
+        ```
+      Parse the mindmap output. Save new nodes to brand/topic-clusters.json
+      (status: not_started, depth_level based on tree position).
+
+      **4. Query NLM for NARRATIVE version**
+      Use --format blog-post with --append to inject quality instructions.
+      The built-in blog-post format produces engaging content. Our --append adds structure.
+
+      CRITICAL: Read the outline from intent-outline.md (Layer 1.5). The --append text MUST
+      instruct NLM to follow that outline section by section.
+
+      ```
+      notebooklm generate report --format blog-post --wait --json \
+        --append "Target audience: {{audience}}. Article type: {{article_type}}.
+
+      FOLLOW THIS OUTLINE (from intent-outline.md):
+      [Paste the full outline here, section by section]
+
+      REQUIREMENTS:
+      - Primary keyword: [from research brief]
+      - Pain points to address: [verbatim pain phrases from research]
+      - Narrative arc: {{narrative_arc}}
+      - 1500-2500 words
+      - Follow the outline structure exactly. Each H2 from the outline becomes a section.
+      - Respect the depth markers from the outline (short/medium/long sections).
+
+      STRUCTURAL VARIATION IS MANDATORY:
+      - NOT every H2 section should be the same length. This is the #1 AI writing tell.
+      - Some sections are 1-2 paragraphs. Others are 5-6 paragraphs. One might be a single sentence.
+      - Vary paragraph lengths too: mix 1-sentence punchy paragraphs with 4-5 sentence deep paragraphs.
+      - Use short paragraphs for emphasis and transitions. Use long ones for evidence and depth.
+      - No two consecutive paragraphs should be the same length.
+      - This creates natural human rhythm. Uniform structure signals AI-generated content.
+
+      - Include named frameworks and specific data from your sources
+      - Include quotable insights and stats with citations
+      - End with 5 FAQ questions and answers
+      - Language: {{language}}"
+      ```
+      Save the narrative draft output.
+
+      **5. Query NLM for AEO version**
+      Structure around the PAA questions extracted in research. This version targets AI answer engines.
+
+      ```
+      notebooklm generate report --format custom --wait --json \
+        "Create an AEO (Answer Engine Optimization) version about {{topic}}.
+      This version is designed to be cited by AI answer engines (ChatGPT, Perplexity, Google AI Overviews).
+
+      Structure around these EXACT questions from Google People Also Ask:
+      [Insert PAA questions verbatim from research brief]
+
+      For each question:
+      - H2 = the exact PAA phrasing (word for word)
+      - Answer: 150-300 words, direct and citable
+      - Include specific data points and named frameworks from your sources
+      - Include quotable stats
+      - End with a summary sentence that captures the key takeaway
+
+      If there are fewer than 5 PAA questions, generate additional questions from your sources.
+      Language: {{language}}"
+      ```
+      Save the AEO draft output.
+
+      **6. Save outputs**
+      Save to the brand's content directory:
+        - narrative-draft.md (from NLM narrative query)
+        - aeo-draft.md (from NLM AEO query)
+        - nlm-sources-used.json (sources NLM cited)
+        - nlm-notebook-id.txt (for future deep-dives)
+
+      These drafts are RAW. The hooks task generates titles, the polish task applies voice DNA and humanizer.
+
+  # ── LAYER 3: HOOKS (AFTER NLM OUTLINE) ──────────────────────
+
+  - id: hooks
+    title: "Generate hooks: {{topic}}"
+    assignee: harper
+    skills: [hook-generator]
+    parents: [nlm_draft]
+    priority: 3
+    body: |
+      Generate hooks that FIT the NLM-generated outline and incorporate SEO keywords.
+      This is Layer 3 of the Content Quality Standard.
+      Hooks come AFTER the NLM draft because titles must match the actual content.
+
+      Load the research brief (keywords, PAA questions, pain phrases) AND the NLM draft.
+
+      **Tournament mode**: Generate 5+ hook variants, run through 5 parallel quality-gate
+      judge personas (skeptic, scanner, buyer, expert, outsider). Winner proceeds to standard quality-gate.
+      See: Skill quality-gate tournament mode.
+
+      Load hook-generator skill and follow its full workflow:
+      1. Read the NLM narrative draft to understand the actual content and angle.
+      2. Feed the research brief as source context (keywords, pain phrases, ICP language).
+      3. Generate hooks that:
+         - Match the actual NLM content (not generic to the topic)
+         - Incorporate the primary SEO keyword naturally
+         - Work as the article title AND the first social post line
+          - Create curiosity without clickbait
+      4. Generate across all 6 Sentence Strategies + 6 Formulas with Spice Mixing.
+      5. Include Contrarian Angles where appropriate.
+      6. Platform-match hooks for {{platforms}}.
+      7. Score all options.
+
+      Present top 3-5 hooks to user in Discord ranked by score.
+      **BLOCK this task — do NOT proceed to polish until user picks a hook.**
+
+      Hook rules: No em dashes. No colons in hooks. Under 15 words preferred.
+      The approved hook becomes the article title and first social post line.
+      Also generate 2-3 subtitle/subheading variants for the approved hook.
+
+  # ── LAYER 4: POLISH (REPLACES write + validate) ─────────────
+
+  - id: polish
+    title: "Polish NLM draft: {{topic}}"
+    assignee: harper
+    skills: [seo-content, blog-publish-pipeline, schema-markup, marketing-psychology, voice-brand-alignment, humanizer, concreteness-fixer, quality-gate]
+    parents: [hooks, nlm_draft]
+    priority: 2
+    deliverables: "businesses/{{tenant}}/content/_drafts/{{topic_slug}}/narrative-draft-polished.md|5000;businesses/{{tenant}}/content/_drafts/{{topic_slug}}/aeo-draft-polished.md|2000"
+    body: |
+      Polish the NLM-generated draft. Apply hooks, voice DNA, humanizer, and quality gate.
+      This is Layer 4 of the Content Quality Standard.
+      The agent does NOT write from scratch. The agent refines NLM output.
+
+      CRITICAL: Output to SEPARATE polished files. Do NOT overwrite the raw NLM drafts.
+      - Read: narrative-draft.md (raw NLM output)
+      - Write: narrative-draft-polished.md (polished version)
+      - Read: aeo-draft.md (raw NLM output)
+      - Write: aeo-draft-polished.md (polished version)
+      The publish task reads the POLISHED files, not the raw drafts.
+
+      **Inputs:**
+      - NLM narrative draft (from nlm_draft task)
+      - NLM AEO draft (from nlm_draft task)
+      - Approved hook + subtitles (from hooks task)
+      - Research brief (keywords, PAA questions, pain phrases, ICP language)
+
+      **POLISH SEQUENCE (run in order):**
+
+      1. **Apply hooks**
+         - Replace NLM title with approved hook
+         - Add approved subtitles as H2 where appropriate
+         - Ensure the hook works as the opening line (narrative version)
+
+      2. **Voice-brand-alignment pass**
+         Load voice-brand-alignment skill. Load brand voice DNA from brand/voice-profile.md
+         or brand/voice-dna.json (whichever exists).
+         Verify the article matches brand voice. Fix any voice drift.
+         NLM does not know the brand voice. Our voice DNA system enforces it here.
+
+      3. **Humanizer pass**
+         Load humanizer skill. Strip ALL 24 AI writing patterns:
+         - Content patterns: significance inflation, promotional language, vague attributions, rule of three, generic conclusions
+         - Language patterns: AI vocabulary, copula avoidance, negative parallelisms, elegant variation, false ranges, passive voice
+         - Style patterns: em dashes (ZERO TOLERANCE), bold overuse, title case in headings
+         - Communication patterns: chatbot artifacts, sycophantic tone, filler phrases
+         Verify: zero em dashes, average sentence length under 15 words.
+
+      4. **Concreteness fixer**
+         Load concreteness-fixer skill. Replace vague abstract NLM language with specific concrete details.
+         NLM tends toward generalities. Make everything specific.
+
+      4.5. **Flow check (read-aloud simulation)**
+         Simulate reading the draft aloud, sentence by sentence.
+         Flow is 10x more important than grammar and punctuation (source: @TheCopyTitan).
+         A reader should never stumble, re-read, or feel jarred.
+
+         Check:
+         - Every sentence-to-sentence transition flows naturally (no abrupt topic jumps)
+         - One-breath rule: no sentence exceeds ~25 words (if you can't say it in one breath, split it)
+         - Opening words of consecutive sentences are varied (no "The... The... The..." repetition)
+         - Rhythm variation: mix short punchy sentences (3-7 words) with medium ones (10-20 words)
+         - No clunky word order that sounds wrong when spoken
+         - First sentence of each paragraph pulls the reader into the next
+
+         Fix every flagged spot. If a sentence reads awkwardly when spoken, rewrite it.
+         This catches what the humanizer misses: humanizer strips AI patterns per-sentence,
+         but flow is about how sentences connect sequentially.
+
+      5. **Structure verification (Layer 3)**
+         - SEO heading hierarchy: H2 to H3, no skipped levels, keyword in first H2
+         - AEO pair exists (narrative + Q&A versions, both polished)
+         - AEO version uses PAA questions as H2 headings (verbatim from research)
+         - Schema markup: Article + FAQPage (HowTo for guides, ItemList for roundups)
+         - Internal links: insert per link-map.json and topic-clusters.json
+           - Link to parent WP category (= cornerstone/hub)
+           - Link to sibling nodes (related articles in same cluster branch)
+
+      6. **Story verification (Layer 4)**
+         - Narrative arc: {{narrative_arc}}
+         - Emotional engagement: pain to hope to proof progression
+         - ICP language from research used naturally (verbatim phrases)
+         - Named frameworks included for shareability
+
+      7. **Quality gate checklist (ALL must pass):**
+         - [ ] Approved hook is the title and opening line
+         - [ ] Narrative arc matches funnel stage spec
+         - [ ] AEO pair exists (narrative + Q&A versions)
+         - [ ] AEO H2s match PAA questions verbatim
+         - [ ] Schema markup present (Article + FAQPage + Author + BreadcrumbList)
+         - [ ] At least 1 proprietary/first-party data point
+         - [ ] Internal links match link-map.json + topic-clusters.json
+         - [ ] Zero em dashes in entire article
+         - [ ] Average sentence length under 15 words
+         - [ ] No AI vocabulary or patterns
+         - [ ] Brand voice DNA match verified
+         - [ ] H2 sections vary in length (at least 2x difference between longest and shortest)
+         - [ ] Paragraph lengths vary (mix of 1-sentence and 4+ sentence paragraphs)
+         - [ ] No two consecutive paragraphs are the same length
+         - [ ] Flow verified: read-aloud simulation passed (no clunky transitions)
+         - [ ] No sentence exceeds 25 words (one-breath rule)
+         - [ ] Opening words of consecutive sentences are varied
+         - [ ] SEO images generated with alt text, title attr, caption, keyword filenames
+          - [ ] Funnel metadata present (funnel_stage, buyer_stage, cta, icp_segment, narrative_arc)
+
+      If ANY check fails, fix it before proceeding to enrich.
+      Do NOT pass to enrich with validation failures.
+
+      Output: narrative-draft-polished.md + aeo-draft-polished.md
+      Save to the brand's content directory.
+      NEVER overwrite the raw narrative-draft.md or aeo-draft.md files.
+
+  # ── LAYER 4.5: INDEPENDENT QUALITY REVIEW ──────────────────
+
+  - id: quality_review
+    title: "Quality review: {{topic}}"
+    assignee: build
+    skills: [quality-gate, voice-brand-alignment, humanizer]
+    parents: [polish]
+    priority: 2
+    gate: true
+    deliverables: "businesses/{{tenant}}/content/_drafts/{{topic_slug}}/quality-review.md|200"
+    body: |
+      INDEPENDENT quality review of the polished drafts. This is NOT the same agent that polished.
+      This task catches what the polish agent missed. It is the last gate before enrichment.
+
+      Read the POLISHED files (NOT the raw NLM drafts):
+      - narrative-draft-polished.md
+      - aeo-draft-polished.md
+
+      Also load:
+      - The avoidance brief (from load_lessons task)
+      - Brand voice DNA (brand/voice-profile.md or brand/voice-dna.json)
+      - Research brief (keywords, PAA questions, pain phrases)
+
+      **REVIEW CHECKLIST (score each item PASS/FAIL with evidence):**
+
+      1. **AI slop detection** — Does this read like AI-generated content?
+         - Check for: uniform paragraph lengths, generic transitions, vague language,
+           significance inflation, promotional tone, "delve/leverage/tapestry/navigate"
+         - If ANY AI pattern detected: FAIL with specific quote
+
+      2. **Framework label detection** — Are there visible copywriting framework labels?
+         - Check for: PAS/AIDA/BAB/Shocking Fact/Fascination Bullets/Quotable Insight labels
+         - Check for: "Before (", "After (", "The Bridge", "Attention:", "Desire:", "Action:"
+         - If ANY label found: FAIL with specific quote
+
+      3. **Em dash audit** — Count em dashes (—) in the entire article
+         - ZERO tolerance. Even one em dash = FAIL
+
+      4. **Sentence length audit** — Average sentence length must be under 15 words
+         - Flag any sentence over 25 words (one-breath rule)
+
+      5. **Voice DNA match** — Does the article sound like the brand?
+         - Compare against brand voice DNA
+         - Flag any voice drift
+
+      6. **Structural variation** — Are sections varied in length?
+         - Longest section should be 2x+ the shortest
+         - No two consecutive paragraphs the same length
+         - If all sections are uniform: FAIL
+
+      7. **Intent alignment** — Does the article answer what the searcher actually wants?
+         - Cross-check with the inferred intent from research
+         - If article misses the actual question: FAIL
+
+      8. **Hook verification** — Is the approved hook the title and opening line?
+         - If NLM's original title is still there: FAIL
+
+      9. **AEO verification** — Does the AEO version use PAA questions as H2 headings?
+         - Must be verbatim from research
+
+      10. **Concreteness** — Are there specific numbers, named examples, real data?
+          - If everything is vague/general: FAIL
+
+      **OUTPUT: quality-review.md**
+      ```
+      ARTICLE: {{topic}}
+      DATE: [today]
+      REVIEWER: Independent quality review agent
+
+      RESULTS:
+      [For each check: PASS/FAIL + evidence]
+
+      OVERALL: PASS / FAIL
+
+      IF FAIL:
+      - Specific issues found (with quotes)
+      - Required fixes (what to change before enrich)
+      - Send back to polish task with fix instructions
+      ```
+
+      **GATE BEHAVIOR:**
+      - If OVERALL = PASS: proceed to enrich
+      - If OVERALL = FAIL: block enrich, send review back to polish task
+        with specific fix instructions. Polish agent re-runs and this review fires again.
+
+  # ── LAYER 5: ENRICHMENT ─────────────────────────────────────
+
+  - id: enrich
+    title: "Enrich: images + links + data: {{topic}}"
+    assignee: harper
+    skills: [image-gen, visual-style, creative]
+    parents: [quality_review]
+    priority: 2
+    deliverables: "businesses/{{tenant}}/content/_drafts/{{topic_slug}}/schema.jsonld|200;businesses/{{tenant}}/content/_drafts/{{topic_slug}}/image-metadata.json|100"
+    body: |
+      Enrich the polished article with visuals, data, and links.
+      This is Layer 5 of the Content Quality Standard.
+
+      **1. Featured/Hero Image (MANDATORY — Gemini Web Interface Method)**
+
+      The featured image is MANDATORY for every article. No article publishes without one.
+      Generate via Gemini web interface (no API keys needed). This is the proven method:
+
+      PREREQUISITE: Chrome must be running with remote debugging:
+        Chrome --remote-debugging-port=9222 --user-data-dir="$HOME/.gemini-image-profile" \
+          --in-process-gpu --disable-gpu-sandbox --disable-gpu-compositing --disable-software-rasterizer
+
+      If Chrome is not logged into Google, inject cookies from the user's main Chrome profile:
+        pip3 install --break-system-packages browser_cookie3
+        python3 -c "import browser_cookie3,json; cj=browser_cookie3.chrome(domain_name='google.com'); ..."
+        Then inject via CDP Network.setCookie for each cookie.
+
+      GENERATION PIPELINE (via CDP WebSocket on ws://localhost:9222):
+      a) Read brand/DESIGN.md for the exact AI image prompt for this article's topic
+      b) Navigate to https://gemini.google.com/app (fresh conversation)
+      c) Focus the Quill editor: document.querySelector('div.ql-editor.textarea')?.focus()
+      d) Type prompt via CDP Input.dispatchKeyEvent (char by char — NOT JS .fill() or .value=)
+      e) Click Send: document.querySelector('button[aria-label="Send message"]')?.click()
+      f) Poll every 5s for up to 3min: querySelectorAll('img').filter(naturalWidth > 200 && !gstatic)
+      g) When image appears: draw to canvas, toDataURL('image/png'), extract via chunked CDP reads
+      h) Save raw PNG to /tmp/mg-images/post-{ID}-gemini.png
+
+      RESIZE to 1200x630 (featured image standard):
+        sips --resampleWidth 1200 input.png --out tmp.png && sips -c 630 1200 tmp.png --out final.png
+
+      UPLOAD to WordPress:
+        POST /wp-json/wp/v2/media (Content-Type: image/png, Content-Disposition: attachment)
+        Then POST /wp-json/wp/v2/posts/{ID} with { featured_media: mediaId }
+
+      Reference implementation: ~/.claude/skills/gemini-image/SKILL.md
+      Full pipeline tested and working as of 2026-07-17.
+
+      **2. In-content visuals (SEO-ready with full metadata)**
+      Read brand/creative-kit.md for visual identity. Read brand/DESIGN.md for exact tokens.
+      {{#icp_segment}}
+      Use the ICP-specific visual variant for {{icp_segment}} if defined in creative-kit.md.
+      {{/icp_segment}}
+      Generate 2-3 in-content visuals using the same Gemini web method or image-gen skill:
+      - Diagrams, infographics, data visualizations
+      - All images must match brand aesthetic from creative-kit.md and DESIGN.md
+
+      Image emphasis by funnel stage ({{funnel_stage}}):
+      - TOFU: Social share image + 1 in-content visual
+      - MOFU: Hero image + 2-3 in-content visuals (infographic preferred)
+      - BOFU: Product/lifestyle images
+
+      FOR EACH IMAGE generate full SEO metadata (save to image-metadata.json):
+      - alt_text: Descriptive, includes primary keyword naturally, under 125 chars.
+                  Screen-reader friendly. Never keyword-stuffed.
+      - title_attr: Brief description of the image (different from alt text).
+      - caption: 1 sentence adding context for the reader.
+      - filename: primary-keyword-descriptor.jpg (hyphenated, lowercase, no spaces).
+                 Hero: {primary-keyword}-hero.jpg. Infographic: {primary-keyword}-infographic.jpg.
+      - og_image: Hero image URL for Open Graph / Twitter Card meta.
+      - dimensions: 1200x630 for hero/OG. 1200x675 for in-content (16:9).
+      - compression: Target under 100KB per image for web performance.
+
+      **2. Schema markup generation (CRITICAL for rich snippets)**
+      Generate complete JSON-LD schema blocks. Save as schema.jsonld in the article directory.
+
+      a) Article schema:
+      {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": "[approved hook/title]",
+        "datePublished": "[publish date ISO]",
+        "dateModified": "[publish date ISO]",
+        "author": { "@id": "[author schema URL]" },
+        "image": "[hero image URL]",
+        "publisher": { "@id": "[publisher URL]" },
+        "mainEntityOfPage": "[article URL]"
+      }
+
+      b) FAQPage schema (extract from the 5 FAQ Q&As in the article):
+      {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": [
+          { "@type": "Question", "name": "[Q1]", "acceptedAnswer": { "@type": "Answer", "text": "[A1]" } },
+          ... (all 5 FAQs)
+        ]
+      }
+
+      c) Person (Author) schema (read from brand/author-bio.md):
+      {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "[author name]",
+        "jobTitle": "[title]",
+        "url": "[author page URL]",
+        "image": "[author headshot URL]",
+        "sameAs": ["[social profile URLs]"],
+        "description": "[1-2 sentence bio]"
+      }
+
+      d) BreadcrumbList schema:
+      {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        "itemListElement": [
+          { "position": 1, "name": "Home", "item": "[site URL]" },
+          { "position": 2, "name": "[category]", "item": "[category URL]" },
+          { "position": 3, "name": "[article title]", "item": "[article URL]" }
+        ]
+      }
+
+      Also generate HowTo or ItemList schema if article_type is how_to or alternatives respectively.
+
+      **2. First-party data**
+      Verify at least 1 proprietary data point is present in the article.
+      If none exists, flag it and use the best available: specific number, named outcome, unique comparison.
+
+      **3. External authority links**
+      Add minimum 3 outbound links to primary sources (studies, official docs, original research).
+      No link farms, no aggregators. Link to the ORIGINAL source.
+
+      **4. Internal links verification**
+      Verify internal links from topic-clusters.json are present:
+      - Link to parent WP category page (hub/cornerstone) for link juice concentration
+      - Link to sibling articles in same cluster branch
+      - Verify the article has been assigned to the correct WP category (parent hub keyword)
+
+      **5. Backlink targets**
+      Produce a list of 5-10 sites that should link to this article (for off-page SEO outreach).
+
+      Output: enriched narrative-draft.md + enriched aeo-draft.md + image files + image-metadata.json + schema.jsonld + backlink-targets.md
+
+  # ── LAYER 6: PUBLISH ────────────────────────────────────────
+
+  - id: publish
+    title: "Publish to WordPress: {{topic}}"
+    assignee: harper
+    skills: [blog-publish-pipeline]
+    parents: [enrich]
+    priority: 1
+    body: |
+      Publish the validated article to WordPress.
+      This is Layer 6 of the Content Quality Standard.
+
+      CRITICAL: Read the POLISHED files, NOT the raw NLM drafts:
+      - Read: narrative-draft-polished.md (NOT narrative-draft.md)
+      - Read: aeo-draft-polished.md (NOT aeo-draft.md)
+      The raw drafts are unpolished NLM output. The polished files have hooks, voice DNA,
+      humanizer, schema, and quality gate applied. Publishing raw drafts = publishing slop.
+
+      Load the blog-publish-pipeline skill and follow its workflow.
+
+      **1. WP Category assignment**
+      Read brand/topic-clusters.json. Find this article's parent node.
+      The parent node's keyword = the WP category name.
+      If the category does not exist in WP, create it:
+        POST /wp-json/wp/v2/categories {"name": "<parent keyword>", "slug": "<parent-slug>"}
+      Assign the article to this category. NEVER use "uncategorized".
+
+      **2. Upload images with SEO metadata**
+      Read image-metadata.json from the enrich task.
+      Upload each image via WP REST API:
+        POST /wp-json/wp/v2/media (multipart form data)
+      For each image, set in the upload payload:
+        - alt_text: from image-metadata.json alt_text field
+        - title: from image-metadata.json title_attr field
+        - caption: from image-metadata.json caption field
+        - description: brief description for media library
+      Record the returned media IDs for in-content image references.
+
+      **3. Publish narrative version first**
+      - Post via WP REST API (POST /wp-json/wp/v2/posts)
+      - Set status `publish` (or `draft` for review)
+      - Article body rules: NO `<h1>` (WP adds its own), NO inline hero `<img>` at start,
+        inject scoped CSS for readability
+      - In-content images: use the media IDs from step 2 with proper alt_text attributes
+      - Set featured image (hero media ID from step 2)
+      - Set category to the parent hub category (from topic-clusters.json)
+      - If language is not `en`: append `-{lang}` to filename, set Polylang language term
+      - If slug conflicts (gets `-2` suffix), fix via WP REST API
+
+      **3. Publish AEO version second**
+      - Use narrative's URL in the AEO handshake div
+      - No featured image on AEO. No author box on AEO.
+      - Orange handshake div linking to narrative.
+      - Set AEO category (typically Guides or equivalent).
+
+      **4. Cross-link handshake divs**
+      Update both posts with real URLs (replace placeholders).
+      - Narrative: blue handshake div links to AEO
+      - AEO: orange handshake div links to narrative
+
+      **5. AIOSEO metadata** (MANDATORY on narrative version):
+      Set via WP REST API PATCH with `aioseo_meta_data`:
+      - `description`: 120-160 chars, include target keyword near start
+      - `keyphrases`: object (NOT string): `{ "focus": { "keyphrase": "primary keyword" }, "additional": ["secondary", "tertiary"] }`
+      - `og_title`, `og_description`, `twitter_title`, `twitter_description`
+
+      **6. Schema injection** (MANDATORY on narrative version):
+      Read schema.jsonld from the enrich task. Inject all JSON-LD blocks into the post:
+      - If AIOSEO is available: set via `aioseo_meta_data.schema` (base64-encoded JSON-LD)
+      - Otherwise: inject as raw HTML in a Custom HTML block at the end of the post content:
+        `<script type="application/ld+json">{ ... }</script>`
+      - Inject Article, FAQPage, Person (Author), and BreadcrumbList schemas
+      - Verify by fetching the published page and checking for the script tags
+
+      **7. Article CTA**
+      The article CTA links to the lead magnet (NOT a MailPoet form embedded in the article).
+      The lead magnet page has the MailPoet subscription form.
+      CTA text depends on funnel stage:
+        - TOFU: "Get the free [lead magnet name]" → links to lead magnet page
+        - MOFU: "See the full guide" → links to cornerstone
+        - BOFU: conversion action → links to landing page
+
+      **8. Update topic cluster status**
+      After successful publish, update brand/topic-clusters.json:
+      - Set node status to "published"
+      - Set article_url to the published narrative URL
+      - Set aeo_url to the published AEO URL
+      - Set wp_post_id and wp_category_id
+
+      Save the published article's post IDs and URLs.
+
+  # ── LAYER 7: INDEX ──────────────────────────────────────────
+
+  - id: indexing
+    title: "Submit to Google/Bing: {{topic}}"
+    assignee: harper
+    skills: [auto-indexing]
+    parents: [publish]
+    priority: 1
+    body: |
+      Submit the published articles to search engines for indexing.
+      This is Layer 7 of the Content Quality Standard.
+
+      1. Run the auto-indexing skill (IndexNow notifies Google, Bing, Yandex, Seznam + sitemap pings)
+      2. Submit BOTH the narrative and AEO version URLs
+      3. Verify submission succeeded (check API responses)
+      4. Note: full indexing takes 24-48h. Verify via Google Search Console URL Inspection after 48h.
+
+  # ── LAYER 8: DISTRIBUTE ─────────────────────────────────────
+
+  - id: socialize
+    title: "Social campaign: {{topic}}"
+    assignee: social
+    skills: [nlm-cli, hook-generator, voice-brand-alignment, humanizer, content-atomizer, social-campaign, content-repost-manager, medium-publisher, linkedin-publisher]
+    parents: [indexing]
+    priority: 1
+    body: |
+      Generate and distribute a balanced social campaign for this article.
+      This is Layer 8 of the Content Quality Standard.
+      Every social post links to the article as the path to solve the user's pain.
+
+      {{#funnel_id}}
+      FUNNEL: All social posts serve funnel {{funnel_id}}. Use the funnel's CTA.
+      Each post must include: funnel_id={{funnel_id}}, buyer_stage, cta, icp_segment.{{/funnel_id}}
+
+      **INPUTS:**
+      - icp_segment: {{icp_segment}} (or "general")
+      - funnel_stage: {{funnel_stage}}
+      - keyword_intent: from research brief (informational/evaluation/transactional)
+      - social_mix: read from brand/funnel-map.md (recommended TOFU/MOFU/BOFU ratio)
+      - blog_article_url: from publish task
+      - NLM notebook_id: from nlm_draft task (for querying social angles)
+
+      **STAGE 1: NLM generates raw social angles (per platform)**
+
+      NLM provides grounded insight angles. Our skills layer adds hooks, voice DNA, humanizer.
+
+      For EACH platform, query NLM for raw angles:
+      ```
+      notebooklm generate report --format custom --wait --json \
+        "Create [N] social media post angles for [PLATFORM] about {{topic}}.
+        Target audience: {{icp_segment}}.
+        Funnel stage: {{funnel_stage}}.
+
+        For each angle provide:
+        - A hook (attention grabber)
+        - A key insight with data from your sources
+        - A CTA pointing to this URL: [blog_article_url]
+
+        Platform constraints:
+        [X/Twitter: 280 chars max, hook-first, include 1 data point, end with implied CTA]
+        [Threads: 500 chars max, conversational, observational tone]
+        [Bluesky: 300 chars max, community-oriented, share insights as observations]
+        [Reddit: value-first, genuine, NOT promotional. Include target subreddit suggestion.]
+        Language: {{language}}"
+      ```
+
+      For LONG-FORM teaser platforms:
+      ```
+      notebooklm generate report --format custom --wait --json \
+        "Create a [PLATFORM] teaser article about {{topic}}.
+        This is NOT the full article. It is a SHORTER-FORM TEASER (300-500 words for LinkedIn,
+        500-800 words for Medium, 300-500 words for Substack).
+
+        Share ONE key insight from your sources. Create a curiosity gap.
+        End with: 'Read the full breakdown: [blog_article_url]'
+
+        Platform tone:
+        [LinkedIn: professional, impact-focused for {{icp_segment}}]
+        [Medium: editorial, executive summary style]
+        [Substack: personal, conversational newsletter style]
+        Language: {{language}}"
+      ```
+
+      **STAGE 2: Our system processes raw angles**
+
+      FOR EACH platform's raw angles:
+      1. hook-generator: craft platform-native hooks (tournament scored)
+         Select hooks that match funnel_stage + ICP + keyword intent
+      2. voice-brand-alignment: apply brand voice DNA
+         Load voice DNA from brand/voice-profile.md or brand/voice-dna.json
+         NLM does not know the brand voice. Our voice DNA system enforces it.
+      3. humanizer: strip any AI patterns from NLM-sourced language
+      4. Platform format verification (character limits, hashtag norms, link placement)
+      5. Flow check (read-aloud simulation): Read each post aloud (simulate).
+         Social copy lives or dies on flow. If it doesn't sound natural spoken, it won't land.
+         Flag and rewrite any post that feels clunky, has awkward word order, or exceeds one breath.
+         Check opening-word variety across consecutive posts in a thread.
+
+      **STAGE 3: Campaign assembly (balanced per social_mix)**
+
+      Assemble the balanced campaign using the ratio from the funnel map:
+      - TOFU posts (awareness): pain point hooks, stat callouts, "did you know" angles
+      - MOFU posts (evaluation): comparison angles, framework explanations, data-backed insights
+      - BOFU posts (conversion): social proof, product angle, urgency
+
+      Every post links to blog_article_url as the path to solve the user's pain.
+
+      **STAGE 4: Long-form publishing**
+
+      - LinkedIn: publish via linkedin-publisher skill
+      - Medium: publish via medium-publisher skill
+      - Substack: publish via API or manual
+      - Reddit: genuine community posts in targeted subreddits
+        Use the pain phrases from research as the hook
+        Share the key finding, mention the full breakdown with link
+        Frame as helping the community, not self-promotion
+
+      **STAGE 5: Repurposing schedule**
+      Load content-repost-manager skill. Create an evergreen reposting schedule.
+
+  # ── LAYER 9: LINK NETWORK ───────────────────────────────────
+
+  - id: linkbacks
+    title: "Build link network: {{topic}}"
+    assignee: linker
+    skills: [off-page-seo, link-building-seo]
+    parents: [socialize]
+    priority: 1
+    deliverables: "businesses/{{tenant}}/content/_drafts/{{topic_slug}}/link-building-action-plan.md|500"
+    body: |
+      Build internal and external links for the published article.
+      This is Layer 9 of the Content Quality Standard.
+
+      **1. Internal link verification**
+      Verify the article contains all internal links from topic-clusters.json:
+      - Links to parent WP category (hub/cornerstone) for link juice concentration
+      - Links to sibling articles in same cluster branch
+      Verify that the parent category page and sibling articles link back to this article.
+
+      **2. External backlinks**
+      Load off-page-seo and link-building-seo skills.
+      From the backlink targets identified in the enrich task:
+      - Directory submission opportunities
+      - Guest post targets
+      - Social profile link opportunities
+      - Resource page link opportunities
+
+      **3. Produce link building action plan**
+      For each target: site name, URL, link type, contact method, priority.
+
+      **4. Social signals**
+      Ensure social posts from the socialize task are live and generating engagement signals.
+
+      **5. Topic cluster update**
+      Update brand/topic-clusters.json: mark any deep-dive child nodes as candidates
+      for future content production based on article performance.
+
+      Output: link-building-action-plan.md with prioritized targets.
+
+  # ── LAYER 10: TRACKING ──────────────────────────────────────
+
+  - id: tracking
+    title: "Track article: {{topic}}"
+    assignee: tracker
+    skills: [analytics-tracking]
+    parents: [linkbacks]
+    priority: 1
+    body: |
+      Record this article in the brand's content tracking system.
+      Update brand/topic-clusters.json with publication status.
+
+      **1. Update content-tracker.json:**
+      Append entry:
+      {
+        "topic": "{{topic}}",
+        "slug": "{slug}",
+        "published_date": "[today]",
+        "narrative_url": "[URL]",
+        "aeo_url": "[URL]",
+        "wp_post_id": [ID],
+        "keyword": "[primary keyword]",
+        "funnel_id": "{{funnel_id}}",
+        "funnel_stage": "{{funnel_stage}}",
+        "icp_segment": "{{icp_segment}}",
+        "cluster_node_id": "{{cluster_node_id}}",
+        "social_posts": { "twitter": "[URL]", "linkedin": "[URL]", "reddit": "[URL]", "medium": "[URL]" },
+        "status": "published",
+        "review_result": null,
+        "learnings": null
+      }
+      Save to: businesses/{{tenant}}/content/content-tracker.json
+
+      **2. Update topic-clusters.json:**
+      Set node status to "published" with article URLs.
+
+      **3. Set up Google Search Console tracking:**
+      Note the URL for 30-day ranking check (automated follow-up).
+
+  # ── LAYER 11: LEARN + FEEDBACK LOOP ─────────────────────────
+
+  - id: learn
+    title: "Learn from review: {{topic}}"
+    assignee: reviewer
+    skills: []
+    parents: [tracking]
+    priority: 1
+    body: |
+      Capture what worked or failed. Feed lessons into Inkstone + brand evergreen.
+      This prevents repeating mistakes and reinforces winning patterns.
+      This is the final layer — the system gets smarter with every article.
+
+      This task fires in TWO modes:
+      - APPROVAL MODE: When Jairo approves the article during batch review
+      - REJECTION MODE: When Jairo rejects or requests revisions
+
+      ## IF REJECTED:
+
+      **1. CAPTURE rejection reason (structured):**
+      Present to Jairo: "What was wrong with '{{topic}}'?"
+      Common categories (Jairo picks or describes):
+      - voice_drift: doesn't sound like the brand
+      - thin_content: lacks depth or substance
+      - ai_slop: detectable AI patterns despite humanizer
+      - wrong_intent: doesn't answer what the searcher wants
+      - uniform_structure: all sections same length (the Harper bug)
+      - missing_schema: no FAQ/Author schema for snippets
+      - poor_images: images missing or no SEO metadata
+      - factual_error: wrong information
+      - weak_hook: title/opening doesn't grab
+      - other: [Jairo describes]
+
+      Specific issue: [what exactly was wrong]
+      Example passage: [quote the offending section]
+      Fix: [what should have been done instead]
+
+      **2. WRITE TO INKSTONE (failure pattern):**
+      ```
+      inkstone_memory_write(
+        text="REJECTION for {{tenant}}: [category].
+              Article: {{topic}}. Date: [today].
+              Issue: [specific issue].
+              Example: [passage].
+              Fix: [correction].
+              This is the Nth occurrence of this pattern.",
+        namespace="/business/{{tenant}}/content-quality",
+        knowledgeType="failure_pattern",
+        confidence=0.9
+      )
+      ```
+
+      **3. UPDATE BRAND EVERGREEN:**
+      Append to businesses/{{tenant}}/evergreen.md under "## Content Quality Lessons":
+      ```
+      - [date] [category]: [lesson] (Article: {{topic}})
+      ```
+
+      **4. ESCALATE if recurring:**
+      If this pattern has occurred 3+ times (check Inkstone), add a HARD RULE to:
+      - businesses/{{tenant}}/brand/voice-profile.md (voice-related)
+      - businesses/{{tenant}}/brand/skill-context.json (structural/quality)
+
+      **5. QUEUE for rework:**
+      Add article to the rework queue with specific fix instructions.
+      The avoidance brief (Layer -1) will catch this on the next run.
+
+      ## IF APPROVED:
+
+      **1. CAPTURE what worked:**
+      Ask Jairo: "What landed with '{{topic}}'?"
+      - Which hook pattern won?
+      - Which voice elements resonated?
+      - Which framework drove the structure?
+      - What data point or insight was strongest?
+      - Was single article or thread better for socials?
+
+      **2. WRITE TO INKSTONE (success pattern):**
+      ```
+      inkstone_memory_write(
+        text="SUCCESS for {{tenant}}: [what worked].
+              Article: {{topic}}. Date: [today].
+              Hook: [pattern]. Framework: [name].
+              Insight: [what resonated].
+              Social format: [what worked].",
+        namespace="/business/{{tenant}}/content-quality",
+        knowledgeType="success_pattern",
+        confidence=0.85
+      )
+      ```
+
+      **3. REINFORCE winning patterns:**
+      - If a hook pattern won 3+ times: add to brand hook templates
+      - If a voice element landed: reinforce in voice-profile.md
+      - If a structure worked: prioritize in future article planning
+
+      ## ALWAYS:
+
+      **4. UPDATE content-tracker.json:**
+      Set review_result: "approved" or "rejected" + learnings field with summary.
+
+      **5. INTELLIGENCE OUTPUT:**
+      The avoidance brief (Layer -1) on the NEXT article for this brand
+      will automatically pick up these lessons from Inkstone.
+      The system is now smarter than it was before this article.

@@ -1,0 +1,3 @@
+#!/bin/sh
+# kanban wrapper — runs the kanban CLI
+exec node "$(dirname "$0")/src/cli.mjs" "$@"

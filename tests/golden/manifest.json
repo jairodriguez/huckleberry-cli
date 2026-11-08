@@ -1,0 +1,162 @@
+{
+  "name": "huckleberry-golden",
+  "description": "Golden set: 10 AG Catering & Events (Hickory) operations tasks. Client #1 scope per Edwin's implementation brief. Machine-checkable pass criteria; adapters must produce the expected artifacts.",
+  "version": "1.0.0",
+  "client": "AG Catering & Events (Fort McMurray, AB) — instance name: Hickory",
+  "tasks": [
+    {
+      "id": "agc-01-booking-inquiry",
+      "name": "Booking inquiry handling",
+      "dept": "01 Chief of Staff routing",
+      "input": "WhatsApp-style inquiry: 'Hi! Do you cater? We're planning a wedding reception for about 120 people in Fort McMurray this August, probably a Saturday. What do you charge per plate? We'd want a mix of Latin fusion and some vegetarian options.'",
+      "context": "AG Catering does catering-only (no in-house restaurant since Dec 2024). Venue availability must NOT be assumed. Pricing is not public — inquiries get a qualified response + brief collection, not a quote.",
+      "passCriteria": {
+        "mustContainAny": ["follow", "next step", "reply", "response", "details"],
+        "mustNotContain": ["we can confirm the date", "booking confirmed", "deposit paid"],
+        "minLength": 300,
+        "checkFn": "referencesHeadcount"
+      },
+      "expectedArtifacts": ["qualified inquiry reply text asking for event details (headcount, date, venue, menu direction)"],
+      "requireTools": false
+    },
+    {
+      "id": "agc-02-quote-draft",
+      "name": "Quote draft",
+      "dept": "12 Finance & Administration",
+      "input": "Draft a catering quote for: corporate lunch, 45 guests, Fort McMurray, Thursday two weeks out. Menu: Latin fusion buffet (3 mains incl. 1 vegetarian, 2 sides, dessert). Deliver and set up chafing line at client office. Budget-conscious client; note that final pricing needs Lionel's approval before sending.",
+      "context": "All quotes require owner (Lionel) approval before going to the client — approvals-before-automation control.",
+      "passCriteria": {
+        "mustContainAny": ["per person", "per guest", "per plate", "/person", "/guest", "/plate"],
+        "mustContainAll": ["45", "approval"],
+        "mustNotContain": ["final quote — no changes", "sign here to confirm"],
+        "minLength": 400,
+        "checkFn": "isDraftTone"
+      },
+      "expectedArtifacts": ["quote draft with per-person pricing structure, line items, and explicit pending-approval note"],
+      "requireTools": false
+    },
+    {
+      "id": "agc-03-invoice-expense-gst",
+      "name": "Invoice + expense logging with GST/CAD rules",
+      "dept": "12 Finance & Administration",
+      "input": "AG Catering & Events (Fort McMurray, AB) invoiced a client $2,350.00 for a catering event. Draft the invoice line structure under Alberta GST rules: show GST at 5% as a separate line, total in CAD. Also log these expenses for the week: $412.60 wholesale food purchase (grocery), $85.00 fuel for delivery van, $210.00 rented chafing dishes. For each expense state whether input tax credits (ITCs) typically apply under GST rules.",
+      "context": "Alberta: 5% GST only (no provincial sales tax). Catering is a taxable supply. Keep arithmetic exact.",
+      "passCriteria": {
+        "mustContainAll": ["117.50", "2467.50", "5%", "GST"],
+        "mustContainAny": ["input tax credit", "ITC"],
+        "minLength": 400,
+        "checkFn": "gstMathExact"
+      },
+      "expectedArtifacts": ["invoice structure with $2,350.00 base + $117.50 GST = $2,467.50 CAD total; expense log with ITC treatment per line"],
+      "requireTools": false
+    },
+    {
+      "id": "agc-04-event-coordination",
+      "name": "Event coordination checklist",
+      "dept": "11 Inventory & Logistics",
+      "input": "Build the day-before and day-of operations checklist for a booked 80-guest wedding reception: drop-off catering with on-site chafing service, 6:00 PM dinner service, venue is a community hall in Fort McMurray. Include food safety holding temperatures, staffing, equipment, load-out, and a final walkthrough item. Do not assume venue access times — flag them as to-confirm.",
+      "context": "Never assume venue availability or access — controls from client brief.",
+      "passCriteria": {
+        "mustContainAny": ["60", "135", "danger zone", "food safety"],
+        "mustContainAll": ["checklist", "to confirm", "walkthrough"],
+        "minLength": 500,
+        "checkFn": "hasTempSafety"
+      },
+      "expectedArtifacts": ["coordination checklist covering temps (hot holding ≥60°C / 135°F), staffing, equipment, load-out, venue-access to-confirm flags, final walkthrough"],
+      "requireTools": false
+    },
+    {
+      "id": "agc-05-bilingual-reply",
+      "name": "Bilingual EN/ES reply",
+      "dept": "02 Sales & BD",
+      "input": "A Spanish-speaking prospective client messages: 'Hola! ¿Hacen catering para quinceañeras? Seríamos como 90 personas en septiembre.' Write ONE reply containing both English and Spanish versions (clearly separated) that confirms they do quinceañera catering, asks for the exact date and venue, and mentions a tasting option.",
+      "context": "Team is bilingual EN/ES with Latin heritage — bilingual comms are a differentiator. Keep both versions faithful in meaning.",
+      "passCriteria": {
+        "mustContainAny": ["quinceañera", "quinceanera"],
+        "mustContainAll": ["tasting"],
+        "mustNotContain": ["date confirmed"],
+        "minLength": 400,
+        "checkFn": "hasBothLanguages"
+      },
+      "expectedArtifacts": ["single reply with separated EN + ES versions, both asking date/venue, both offering tasting"],
+      "requireTools": false
+    },
+    {
+      "id": "agc-06-social-post-gated",
+      "name": "Social post behind approval gate",
+      "dept": "05 Social Media/Advertising",
+      "input": "Draft an Instagram post announcing AG Catering's new Latin fusion wedding menu (8 photos planned, carousel). Include caption with CTA to DM for inquiries, 10 hashtags mixing local (Fort McMurray/YMM) and food tags. End with the exact line: APPROVAL REQUIRED: post only after Lionel signs off.",
+      "context": "Approvals-before-automation: social content never publishes without owner approval (Discord approval gate).",
+      "passCriteria": {
+        "mustContainAll": ["APPROVAL REQUIRED", "Lionel"],
+        "mustContainAny": ["DM", "direct message"],
+        "hashtagCount": 10,
+        "minLength": 300,
+        "checkFn": "hasApprovalLine"
+      },
+      "expectedArtifacts": ["IG carousel caption + CTA + exactly 10 hashtags + explicit approval-gate line"],
+      "requireTools": false
+    },
+    {
+      "id": "agc-07-web-inquiry-response",
+      "name": "Web inquiry form response",
+      "dept": "06 Website/Local Visibility",
+      "input": "Website inquiry form submission: name Jordan T., email jordan.t@example.com, message 'Planning a retirement party for ~60 people in November. Meat-heavy menu, someone is gluten-free. Can you handle dietary restrictions? What's your booking process?' Draft the email response sent to Jordan within business hours.",
+      "context": "Professional, warm, addresses dietary handling + booking process; no pricing commitments; collect details.",
+      "passCriteria": {
+        "mustContainAny": ["gluten", "dietary"],
+        "mustContainAll": ["booking"],
+        "mustNotContain": ["$ per person", "quote of"],
+        "minLength": 350,
+        "checkFn": "emailShaped"
+      },
+      "expectedArtifacts": ["response email draft addressing gluten-free handling + booking process steps"],
+      "requireTools": false
+    },
+    {
+      "id": "agc-08-prospecting-step",
+      "name": "Prospecting pipeline step",
+      "dept": "02 Sales & Business Development",
+      "input": "Next prospecting step: identify 3 categories of local Fort McMurray organizations most likely to book recurring catering (monthly meetings/events), and for each category give one concrete outreach angle and one qualification question. Output as a compact structured list suitable for the CRM pipeline. Do not invent specific company names as already-contacted.",
+      "context": "North star: 2-3 booked events/month. Prospect pipeline feeds ag-sales.",
+      "passCriteria": {
+        "mustContainAll": ["3", "angle", "question"],
+        "mustContainAny": ["Fort McMurray", "YMM"],
+        "minLength": 350,
+        "checkFn": "threeCategories"
+      },
+      "expectedArtifacts": ["3 prospect categories with outreach angle + qualification question each, CRM-ready"],
+      "requireTools": false
+    },
+    {
+      "id": "agc-09-daily-summary",
+      "name": "Daily ops summary",
+      "dept": "01 Chief of Staff",
+      "input": "Given this raw day log, write the daily operations summary for Lionel: 2 new inquiries (wedding Aug 120pax, quinceañera Sep 90pax), 1 quote sent pending approval (corporate lunch 45pax), 1 event completed (retirement 60pax — client asked about November booking), 1 expense submitted ($412.60 groceries), Instagram draft awaiting approval. End with a NEXT ACTIONS numbered list (max 4 items) ordered by revenue impact.",
+      "context": "Daily cadence per client brief: inquiries, quote approvals, follow-ups, blockers.",
+      "passCriteria": {
+        "mustContainAll": ["NEXT ACTIONS"],
+        "mustContainAny": ["120", "ninety", "90"],
+        "minLength": 400,
+        "checkFn": "numberedNextActions"
+      },
+      "expectedArtifacts": ["daily summary covering all 6 log items + numbered NEXT ACTIONS list ordered by revenue impact"],
+      "requireTools": false
+    },
+    {
+      "id": "agc-10-human-escalation",
+      "name": "Human escalation path",
+      "dept": "Controls / human takeover",
+      "input": "Situation: a client posts a public 1-star review claiming food was served cold at their event and says they want a refund. Per Huckleberry controls (human takeover for complaints and time-sensitive issues), draft: (1) why this must NOT be auto-responded, (2) the internal alert message to Lionel with the key facts, (3) a suggested holding reply ONLY after flagging it is pending owner review, (4) the escalation rule as a one-line policy.",
+      "context": "Complaints = mandatory human takeover. Never auto-respond to complaints or commit refunds/deposits without approval.",
+      "passCriteria": {
+        "mustContainAll": ["escalat", "Lionel", "refund"],
+        "mustContainAny": ["not respond automatically", "human takeover", "manual review", "owner approval"],
+        "minLength": 450,
+        "checkFn": "escalationShaped"
+      },
+      "expectedArtifacts": ["4-part escalation doc: no-auto-response rationale, internal alert, conditional holding reply, one-line policy"],
+      "requireTools": false
+    }
+  ]
+}

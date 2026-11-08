@@ -1,0 +1,2 @@
+{"ts":"2026-11-06T15:15:33.791Z","runId":"2026-11-06T15-15-33-790Z-deepseek","event":"run-start"}
+{"ts":"2026-11-06T15:15:44.574Z","runId":"2026-11-06T15-15-33-790Z-deepseek","taskId":"agc-01-booking-inquiry","adapterId":"deepseek","model":"deepseek/deepseek-v4.1-flash","status":"ok","usage":{"input":227,"output":1168,"cacheHit":0,"cacheMiss":227},"costUsd":0.000674,"durationMs":10783}

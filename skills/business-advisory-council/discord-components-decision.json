@@ -1,0 +1,8 @@
+{
+  "decision": "Start Discord Components v2 implementation - Phase 1 (Muse post approvals)?",
+  "context": "Proposal complete at /proposals/discord-components-v2.md. Muse approval buttons: One-click approve/reject, auto-post to platform, faster turnaround. Phase 1 = 2 days, Phase 2 (Nomadix) = 3 days. Benefits quantified: ~5 hours/month saved. User asked 4+ times, no decision received.",
+  "constraints": "Requires Discord execApprovals config. Muse agent integration needed. Button click handlers to implement.",
+  "success_criteria": "Muse drafts post with approve/reject buttons, Approve button triggers platform post, Reject button requests changes, Testing complete with real post draft",
+  "default_action": "proceed_phase_1",
+  "rationale": "Phase 1 has fastest ROI (2 days), builds foundation for Phase 2, Muse workflow is highest-friction social media task. If user says 'STOP' before starting, abort."
+}

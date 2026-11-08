@@ -1,0 +1,361 @@
+name: Social Campaign
+description: >
+  Multi-platform social content pipeline. Research any topic via NLM + podcast/YouTube/X discovery,
+  generate hooks, write platform-native content (single tweet by default, thread only when warranted),
+  humanize, quality gate, approve, and learn. Brand-agnostic.
+
+variables:
+  - name: topic
+    required: true
+    description: The content topic (any source — kaizen, news, idea, podcast, etc.)
+  - name: tenant
+    required: true
+    description: Brand/project tenant name (maps to businesses/{tenant}/)
+  - name: platforms
+    default: twitter,linkedin
+    description: Comma-separated target platforms
+  - name: funnel_stage
+    default: TOFU
+    description: "TOFU (awareness), MOFU (consideration), or BOFU (decision). Drives angles and gate scoring."
+  - name: icp_segment
+    required: false
+    description: "ICP segment to target. Uses brand default from skill-context.json if not set."
+  - name: cta_resource
+    required: false
+    description: "Lead magnet or resource for CTA (calculator, checklist, guide). Uses brand default if not set."
+
+tasks:
+  # ── TASK 0: SHARP-THESIS VALIDATION ────────────────────────
+  - id: thesis_validation
+    title: "Validate hook/thesis: {{topic}}"
+    assignee: build
+    skills: [sharp-thesis-validator]
+    priority: 4
+    gate: true
+    body: |
+      Validate that "{{topic}}" passes the Sharp-Thesis (Cerebras) Test in social mode.
+      This blocks all downstream tasks until PASS.
+
+      Run the validator CLI (deterministic gate — do NOT hand-simulate):
+        sharp-thesis-validator "{{topic}}" --brand {{tenant}} --mode social --json
+      Exit codes: 0 = PASS, 1 = FAIL, 2 = usage error. Parse the JSON verdict.
+      (Social mode: urgency optional unless thesis-config.social.urgency_required=true
+      — the CLI applies this automatically; add --require-urgency to force it.)
+      Fallback ONLY if the binary is missing: load the `sharp-thesis-validator`
+      skill via the skill tool and apply the criteria manually.
+
+      **Social mode criteria:**
+      1. Single arguable claim: REQUIRED
+      2. Concrete number: REQUIRED (must appear in the title; years don't count)
+      3. Urgency: optional by default (unless thesis-config.social.urgency_required=true)
+      4. Title/hook expressibility ≤280 chars (or thesis-config override)
+
+      **On PASS:** Mark complete. Proceed to research.
+      **On FAIL:** BLOCK. Present reframing suggestions to user.
+        User must approve a reframed topic before proceeding.
+
+  # ── TASK 1: RESEARCH + NLM ────────────────────────────────────
+  - id: research
+    title: "Research: {{topic}}"
+    assignee: researcher
+    skills: [nlm-cli, podcast-to-thread, x-research, subreddit-pain-extraction]
+    parents: [thesis_validation]
+    priority: 3
+    body: |
+      Deep research for social content about "{{topic}}" for {{tenant}}.
+      Goal: gather rich context that drives VALUE for the reader.
+
+      **0. Create campaign directory**
+      Derive a slug from the topic (first 5 words, lowercase, hyphenated).
+      Create: businesses/{{tenant}}/content/_drafts/{slug}/
+      ALL outputs from ALL tasks in this campaign go in that directory.
+      This prevents campaigns from overwriting each other.
+
+      **1. Brand context (load first)**
+      Read businesses/{{tenant}}/brand/skill-context.json for ICP, pains, positioning angles, offer, distribution rules.
+      Funnel stage: {{funnel_stage}}. Target ICP segment: {{icp_segment}}.
+
+      **2. Source discovery (use skills — do NOT search manually)**
+      - Load podcast-to-thread skill: find related podcast episodes and YouTube videos for "{{topic}}"
+      - Load x-research skill: search X for current narratives, what's already been said, sentiment, trending angles
+      - Load subreddit-pain-extraction skill: extract verbatim pain phrases from relevant subreddits
+
+      **3. NLM deep research**
+      Use the notebooklm CLI (notebooklm-py v0.7.3). Create or reuse notebook for this topic.
+      Add all discovered sources (podcasts, YouTube, articles, kaizen reports) to the notebook.
+      Do NOT generate mindmaps or topic clusters — that is SEO overhead.
+
+      Query NLM for social-specific research:
+      ```
+      notebooklm generate report --format custom --wait --json \
+        "Research '{{topic}}' for social media content targeting {{funnel_stage}} audience.
+
+        Provide:
+        1. CONTRARIAN ANGLES: What is everyone getting wrong about this topic? 3-5 contrarian takes backed by sources.
+        2. GAP ANALYSIS: What angles are NOT being covered by existing content? What is underserved?
+        3. CORE INSIGHTS: The 3 most surprising or valuable insights from your sources. Include specific data points.
+        4. PAIN POINTS: What problems does the target audience face related to this topic? Use their language.
+        5. PLATFORM ANGLES: For each platform ({{platforms}}), what angle would work best?
+
+        Be specific. Cite sources. Use real data."
+      ```
+
+      **4. Output structured research brief**
+      Save to: businesses/{{tenant}}/content/_drafts/{slug}/research-brief.json
+      Schema:
+      {
+        "topic": "{{topic}}",
+        "campaign_slug": "{slug}",
+        "funnel_stage": "{{funnel_stage}}",
+        "icp_segment": "{{icp_segment}}",
+        "pain_phrases": ["verbatim phrases from subreddits"],
+        "current_narratives": ["what X and existing content already says"],
+        "contrarian_angles": ["angles backed by NLM sources"],
+        "gap_angles": ["underserved angles nobody covers"],
+        "core_insights": ["3 most valuable insights with data"],
+        "platform_angles": {
+          "twitter": "best angle for X",
+          "linkedin": "best angle for LI"
+        },
+        "nlm_notebook_id": "<id>",
+        "sources_used": ["list of URLs/files added to NLM"]
+      }
+
+  # ── TASK 2: HOOKS ─────────────────────────────────────────────
+  - id: hooks
+    title: "Hooks: {{topic}}"
+    assignee: writer
+    skills: [hook-generator]
+    parents: [research]
+    priority: 3
+    body: |
+      Generate hooks for the topic.
+      Load the hook-generator skill.
+
+      **1. Load research brief**
+      Read businesses/{{tenant}}/content/_drafts/{slug}/research-brief.json
+      This is your ONLY context. Do not re-research.
+
+      **2. Generate hooks (tournament scored)**
+      Run the hook-generator CLI:
+      ```
+      node ~/.claude/skills/hook-generator/scripts/generate-hooks-unified.js \
+        --content "{{topic}}" \
+        --platform twitter \
+        --brand {{tenant}} \
+        --count 10
+      ```
+      Take the top 5 from CLI output.
+      Also generate 3-5 hooks manually using the 6-formula system from the hook-generator SKILL.md.
+      Ground every hook in the research brief pain phrases. Use pain language verbatim.
+
+      **3. Present to Jairo**
+      Present the top 3 hooks in Discord.
+      Show: hook text, pattern, score, why it works.
+      Provide action buttons: "Hook 1", "Hook 2", "Hook 3", "Revise", "Kill".
+
+      **BLOCK this task. Do NOT proceed until Jairo picks a hook.**
+
+      Hook rules: No em dashes. No colons. No AI slop patterns (no "You aren't X. You are Y." negation-then-revelation). No "AI is changing everything" generics.
+
+      **4. Output**
+      Save to: businesses/{{tenant}}/content/_drafts/{slug}/hooks.json
+      Schema:
+      {
+        "approved_hook": "the hook text",
+        "pattern": "hook formula used",
+        "score": 95,
+        "runner_ups": [{"hook": "...", "score": 90}, ...]
+      }
+
+  # ── TASK 3: WRITE ─────────────────────────────────────────────
+  - id: write
+    title: "Write: {{topic}}"
+    assignee: writer
+    skills: [x-post-generator-openclaw]
+    parents: [hooks]
+    priority: 2
+    body: |
+      Write the social content using the approved hook and research brief.
+      Load the x-post-generator-openclaw skill.
+
+      **1. Load context**
+      Read businesses/{{tenant}}/content/_drafts/{slug}/hooks.json (approved hook)
+      Read businesses/{{tenant}}/content/_drafts/{slug}/research-brief.json (pain phrases, insights, platform angles)
+      Read businesses/{{tenant}}/brand/voice-dna.md (voice rules — apply as SEASONING, not poetry)
+
+      **2. FORMAT DECISION (most important step)**
+
+      Assess the core insight from the research brief. Can it land with full value in a SINGLE post?
+
+      - SINGLE TWEET (default): If the insight fits in 280 chars or less with all its value intact, write ONE tweet. Stop. Done.
+      - THREAD (only when warranted): Only write a thread if the insight genuinely requires multiple posts to deliver value. Examples that warrant a thread: a case study with setup and resolution, a multi-step framework the reader needs step by step, a narrative arc with a before/after transformation.
+
+      Do NOT write a thread when a single tweet works. Padding a one-tweet insight into 6 tweets destroys value.
+
+      **3. Thread rules (if thread is warranted)**
+      - Each tweet must deliver STANDALONE VALUE. A reader who sees only tweet 3 should get something useful.
+      - No tweet exists solely to pull the reader to the next. No manufactured curiosity gaps. No "slippery slide."
+      - Deliver the hook's promise FAST. If the hook says "one process fixes it," the reader should know what that process is by tweet 2 at the latest.
+      - Maximum density. Every word earns its place. If removing a tweet doesn't lose value, remove it.
+      - Thread body: ZERO links. Links kill reach.
+      - Reply tweet / first comment: contains the CTA with link.
+
+      **4. CTA strategy**
+      - The CTA must offer MORE VALUE (lead magnet, calculator, checklist, resource) — not a sales pitch.
+      - For single tweets: CTA goes in the reply.
+      - For threads: CTA goes in the reply to the last tweet.
+
+      **5. Voice rules (NON-NEGOTIABLE)**
+      - Voice DNA as seasoning (20%), reader value first (80%). Sound like a person, not a brand.
+      - Write like you are explaining to a smart, skeptical friend. Back every claim with specifics.
+      - No em dashes. No AI vocabulary. No negation-then-revelation patterns. No generic conclusions.
+      - RHYTHM is the tell. Real writing alternates punchy short sentences with longer ones. Same-length paragraphs scream AI.
+      - AVOID: "delve," "utilize," "game-changer," "leverage," anything that starts with "Let's dive in." Read it out loud.
+
+      **6. Generate per platform**
+      For each platform in {{platforms}}, adapt the content using the platform-specific angles from the research brief.
+      X/Twitter: hook-first, max density, max 280 chars per post
+      LinkedIn: professional framing, longer paragraphs acceptable, data-backed
+
+      **7. Output**
+      Save to: businesses/{{tenant}}/content/_drafts/{slug}/draft-{{platform}}.md (one per platform)
+      Save reply/CTA to: businesses/{{tenant}}/content/_drafts/{slug}/reply-{{platform}}.md
+      Include metadata header in each file:
+      ---
+      topic: "{{topic}}"
+      campaign_slug: "{slug}"
+      funnel_stage: "{{funnel_stage}}"
+      platform: twitter
+      format: "single" or "thread"
+      post_count: 1
+      hook_pattern: "from hooks.json"
+      cta_type: "calculator / checklist / guide / none"
+      ---
+
+  # ── TASK 4: HUMANIZE ──────────────────────────────────────────
+  - id: humanize
+    title: "Humanize: {{topic}}"
+    assignee: writer
+    skills: [humanizer, voice-brand-alignment]
+    parents: [write]
+    priority: 2
+    body: |
+      Strip all AI patterns and enforce brand voice DNA.
+      Load the humanizer skill and voice-brand-alignment skill.
+
+      **1. For each platform draft:**
+      Read businesses/{{tenant}}/content/_drafts/{slug}/draft-*.md
+
+      **2. Humanizer pass (all 30 AI patterns)**
+      - Content: significance inflation, promotional language, vague attributions, rule of three, generic conclusions
+      - Language: AI vocabulary, copula avoidance, negative parallelisms, elegant variation, false ranges, passive voice
+      - Style: em dashes (ZERO TOLERANCE), bold overuse, title case
+      - Communication: chatbot artifacts, sycophantic tone, filler, hedging
+      - KILL patterns: "You aren't X. You are Y." negation-then-revelation. Generic aphorisms. "The AI revolution is here."
+
+      **3. Voice-brand-alignment validation**
+      - Does it sound like a person explaining to a peer, not a brand broadcasting?
+      - Is voice DNA present as seasoning (not overpowering)?
+      - Would Jairo share this as-is?
+      - Any banned words from voice-dna.md?
+
+      **4. Output**
+      Save to: businesses/{{tenant}}/content/_drafts/{slug}/humanized-*.md
+      Include change log: what was stripped, what was rewritten, what passed clean.
+
+  # ── TASK 5: QUALITY GATE (ICP at funnel stage) ────────────────
+  - id: gate
+    title: "Quality gate: {{topic}}"
+    assignee: reviewer
+    skills: [quality-gate]
+    parents: [humanize]
+    priority: 1
+    body: |
+      Run quality gate with ICP impersonation at funnel stage.
+      Load the quality-gate skill. Use STANDARD mode (single judge).
+
+      **1. Load brand context**
+      Read businesses/{{tenant}}/brand/skill-context.json
+      Extract ICP, pains, positioning angles, offer, voice into a JSON object.
+
+      **2. For each platform's humanized draft:**
+      Read businesses/{{tenant}}/content/_drafts/{slug}/humanized-*.md
+
+      **3. Spawn ONE quality gate judge subagent per platform**
+      Use Task tool to spawn a build subagent with the standard quality-gate prompt template:
+      - Pass: draft_path, mode: social, original_prompt, attempt: 1, brand_context (the JSON object)
+
+      The judge will:
+      - Roleplay as the ICP at funnel stage {{funnel_stage}}
+      - Score 5 dimensions: stop-scroll, relevance, trust, next-step, ai-slop (0-10)
+      - Apply funnel-stage weights (TOFU: stop-scroll 3x, MOFU: relevance 3x, BOFU: trust 3x)
+      - Validate positioning alignment (must match at least one angle from skill-context.json)
+      - Return JSON with passed/failed, scores, weighted_average, rewrite_instructions
+
+      **4. Aggregate results**
+      Save to: businesses/{{tenant}}/content/_drafts/{slug}/gate-results.json
+
+      **5. Pass/Fail decision**
+      - PASS: weighted average >= 7.5 AND no dimension below 5.5 AND positioning aligned
+      - FAIL: anything else
+
+      **6. If FAIL (attempt < 3): rewrite with specific feedback, re-run humanize + gate**
+      **7. If FAIL (attempt = 3): present to Jairo with all scores**
+      **8. If PASS: proceed to approval**
+
+  # ── TASK 6: APPROVE ───────────────────────────────────────────
+  - id: approve
+    title: "Approve: {{topic}}"
+    assignee: reviewer
+    parents: [gate]
+    priority: 1
+    body: |
+      Present quality-gated content to Jairo for final approval.
+
+      **1. Present in Discord**
+      For each platform, show:
+      - The complete post(s) (each post clearly numbered)
+      - The reply/CTA separately
+      - Quality gate summary (weighted avg, pass/fail)
+      - Metadata: hook pattern, format (single/thread), CTA type
+
+      **2. Action buttons per platform: Approve / Revise / Kill**
+
+      **3. If APPROVE:**
+      - Save final content to: businesses/{{tenant}}/content/social/{{platform}}/
+      - Log to production database: businesses/{{tenant}}/content/content-tracker.json
+      - Note: Jairo posts manually. Do NOT auto-post to any platform.
+
+      **4. If REVISE:** collect feedback, go back to write task
+      **5. If KILL:** move to _killed/ with reason
+
+  # ── TASK 7: LEARN + IMPROVE ───────────────────────────────────
+  - id: learn
+    title: "Learn: {{topic}}"
+    assignee: reviewer
+    parents: [approve]
+    priority: 1
+    body: |
+      Debrief with Jairo and update brand intelligence for the next run.
+
+      **1. Ask Jairo directly (interactive)**
+      Present a short debrief in Discord:
+      "Quick debrief on '{{topic}}':
+      - What worked?
+      - What didn't?
+      - Single tweet or thread — which felt right?
+      - Any voice elements that landed or missed?"
+
+      **2. Log feedback**
+      Update the content-tracker.json entry with Jairo's feedback in the "learnings" field.
+
+      **3. Update brand intelligence**
+      Based on Jairo's feedback:
+      - If a hook pattern worked: note it in hook performance data
+      - If a voice element landed: reinforce in voice-dna.md learnings
+      - If an angle missed: add to "avoid" list in skill-context.json
+      - If a CTA type resonated: prioritize in future runs
+
+      **4. Output**
+      Save learnings to: businesses/{{tenant}}/content/learnings.json (append entry)
