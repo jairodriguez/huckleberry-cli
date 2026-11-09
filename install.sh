@@ -49,7 +49,7 @@ echo "    2. Edit ~/.huckleberry/.env  — add DISCORD_BOT_TOKEN + TYPESAFE_API_
 echo "       (Discord bot walkthrough: ~/.huckleberry/wiki/discord.md)"
 echo "    3. huckleberry doctor        — verify everything"
 echo ""
-echo "  Then start your Chief of Staff:"
+echo "  Then start:"
 echo ""
 echo "    opencode"
 echo ""
