@@ -2,9 +2,9 @@
 
 **Your own AI operations department — installed with one command.**
 
-Huckleberry gives you a chief-of-staff AI team running on **your** machine, wired to **your** Discord, with persistent memory, 105+ professional skills, and a built-in repair agent (Hermes) that keeps the system alive 24/7.
+Huckleberry installs a 5-agent system on **your** machine, wired to **your** Discord, with persistent memory, 105+ professional skills, and a built-in repair agent (Hermes) that keeps the system alive 24/7.
 
-> **One-liner:** *Your own AI department, running on your own server, answering in your own channels — built, trained, and maintained for you.*
+> **What you actually get:** 1 Chief of Staff (orchestrator) + 3 workers (build/plan/researcher) + 1 doctor (Hermes) = 5 agents total. All running on your hardware, your keys, your channels.
 
 ## Quick Start
 
@@ -12,32 +12,50 @@ Huckleberry gives you a chief-of-staff AI team running on **your** machine, wire
 curl -fsSL https://raw.githubusercontent.com/jairodriguez/huckleberry-cli/main/install.sh | bash
 ```
 
-Or manually:
+Or manually (same thing, step by step):
 
 ```bash
+# 1. Install the CLI
 npm install -g @jairodri/huckleberry-cli
+
+# 2. Scaffold the system (~/.huckleberry + skills + configs)
 huckleberry install
+
+# 3. Install the runtime (opencode + kimaki Discord bot)
 npm install -g opencode kimaki
+
+# 4. Personalize: name, business, timezone, tone, optional keys
 huckleberry interview
 ```
 
 Then finish setup:
-1. **`huckleberry interview`** — your name, business, tone, optional API keys
-2. **`~/.huckleberry/.env`** — add your `DISCORD_BOT_TOKEN` + `TYPESAFE_API_KEY` (Discord bot walkthrough: `~/.huckleberry/wiki/discord.md`)
-3. **`huckleberry doctor`** — verify everything
-4. **`opencode`** — start working with your Chief of Staff
 
-**For AI agents** (Claude, Cursor, Codex, etc.) — point them at this repo and say: *"Read the README and run the Quick Start."* Every step is agent-executable.
+1. **Add your keys** to `~/.huckleberry/.env`:
+   - `DISCORD_BOT_TOKEN` — create a Discord bot (walkthrough: `~/.huckleberry/wiki/discord.md`)
+   - `TYPESAFE_API_KEY` — get one at https://typesafe.ai (enables Jev judgment tools)
 
-## What You Get
+2. **Verify everything**: `huckleberry doctor`
+
+3. **Start**: `opencode` (opens your Chief of Staff in Discord)
+
+**For AI agents** (Claude, Cursor, Codex, etc.) — point them at this repo and say: *"Read this README and run Quick Start."* Every step is agent-executable.
+
+## Agent Structure
+
+| Agent | Role | Bound to |
+|---|---|---|
+| **cos** (Chief of Staff) | Orchestrator — your main Discord interface, spawns workers, tracks tasks | Main Discord channel |
+| **build** | Executor — writes files, runs tools, completes tasks | Background (spawned by cos) |
+| **plan** | Strategist — read-only research, analysis, planning | Background (spawned by cos) |
+| **researcher** | Intelligence — web research, competitive analysis, data gathering | Background (spawned by cos) |
+| **🩺 hermes** | System doctor — repairs kimaki, Discord, opencode, Inkstone, Jev | `#system-repair` channel (you create) |
+
+## What Else You Get
 
 | Component | What it does |
 |---|---|
-| **Chief of Staff** | Orchestrator agent — your main interface in Discord |
-| **build / plan / researcher** | Worker agents: execution, strategy, web research |
-| **🩺 Hermes (the doctor)** | System administrator — repairs the stack when it breaks |
-| **Inkstone** | Persistent memory: decisions, contacts, procedures, past failures |
-| **Jev** | Judgment layer: fast structured decisions (classify, rank, verify) |
+| **Inkstone** | Persistent memory: decisions, contacts, procedures, past failures — survives restarts |
+| **Jev** | Judgment layer: fast structured decisions (classify, rank, verify, gate) |
 | **105+ skills** | 9 packs: content, SEO, CRO, web design, research, outreach, social |
 | **Watchdog** | 5-minute health sweep + auto-repair + Discord alerts |
 | **Self-improvement** | Weekly sweep proposes concrete improvements from the week's failures |
@@ -88,7 +106,6 @@ Your AI department runs on **your** machine, with **your** keys, answering in **
 ## Docs
 
 - Installed wiki: `~/.huckleberry/wiki/` — kimaki, Discord bot setup, opencode, Inkstone, Hermes
-- https://huckleberry.ai
 
 ## Requirements
 
